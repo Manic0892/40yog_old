@@ -1,5 +1,10 @@
 var newCirc;
 var stage;
+var jumping = false;
+var jumpHeight = 200;
+var currJumpHeight;
+
+
 
 window.onload = function() {
 	layer = new Kinetic.Layer({
@@ -8,7 +13,7 @@ window.onload = function() {
         stage = new Kinetic.Stage({
                 container: 'gameWrapper',
                 width: 1000,
-                height: 1000
+                height: 750
         });
 	stage.add(layer);
 	newCirc = new Kinetic.Circle({
@@ -21,11 +26,76 @@ window.onload = function() {
 	});
 	layer.add(newCirc);
 	stage.draw();
-	window.setInterval(function() {moveCirc()}, 33.3);
+	window.setInterval(function() {redraw()}, 29.3);
+	$("body").keydown(function(key) {
+		keyDown(key);
+	});
+	$("body").keyup(function(key) {
+		keyUp(key);
+	});
+}
+
+function redraw() {
+	moveCirc();
+	stage.draw();
 }
 
 function moveCirc() {
-	console.log('hi');
-	newCirc.setX(newCirc.getX() + 10);
-	stage.draw();
+	if (jumping == true && currJumpHeight < jumpHeight) {
+		if (currJumpHeight < jumpHeight) {
+			currJumpHeight += 10;
+			newCirc.setY(newCirc.getY() - 10);
+		} else {
+			if (newCirc.getY() > stage.getHeight()) {
+				jumping = false;
+			} else {
+				newCirc.setY(newCirc.getY() + 10);
+			}
+		}
+	} else {
+		if (newCirc.getY() > stage.getHeight()) {
+		} else {
+			newCirc.setY(newCirc.getY() + 10);
+		}
+	}
+}
+
+function jump() {
+	currJumpHeight = 0;
+	jumping = true;
+}
+
+function keyDown(key) {
+	switch (key.keyCode) {
+		case 37:
+			console.log("left");
+			break;
+		case 38:
+			console.log("up");
+			jump();
+			break;
+		case 39:
+			console.log("right");
+			break;
+		case 40:
+			console.log("down");
+			break;
+	}
+}
+
+function keyUp(key) {
+	switch (key.keyCode) {
+		case 37:
+			console.log("left");
+			break;
+		case 38:
+			console.log("up");
+			break;
+		case 39:
+			console.log("right");
+			break;
+		case 40:
+			console.log("down");
+			break;
+	}
 }
