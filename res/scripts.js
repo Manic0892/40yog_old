@@ -1,10 +1,12 @@
 var newCirc;
 var stage;
-var jumping = false;
 var jumpHeight = 200;
 var currJumpHeight;
-
-
+var up = false;
+var down = false;
+var left = false;
+var right = false;
+var speed = 10;
 
 window.onload = function() {
 	layer = new Kinetic.Layer({
@@ -16,15 +18,25 @@ window.onload = function() {
                 height: 750
         });
 	stage.add(layer);
-	newCirc = new Kinetic.Circle({
+	newCirc = new Kinetic.Rect({
 		x: stage.getWidth() / 2,
 		y: stage.getHeight() / 2,
-		radius: 70,
+		height:20,
+		width:20,
 		fill: 'red',
 		stroke: 'black',
-		strokeWidth: 4
+		strokeWidth: 4,
+	});
+	newRect = new Kinetic.Circle({
+		x:100,
+		y:100,
+		radius:75,
+		fill:'blue',
+		stroke: 'black',
+		strokeWidth:4
 	});
 	layer.add(newCirc);
+	layer.add(newRect);
 	stage.draw();
 	window.setInterval(function() {redraw()}, 29.3);
 	$("body").keydown(function(key) {
@@ -36,49 +48,43 @@ window.onload = function() {
 }
 
 function redraw() {
-	moveCirc();
+	console.log(stage.getIntersections(newCirc.getX(), newCirc.getY()));
+	move();
 	stage.draw();
 }
 
-function moveCirc() {
-	if (jumping == true && currJumpHeight < jumpHeight) {
-		if (currJumpHeight < jumpHeight) {
-			currJumpHeight += 10;
-			newCirc.setY(newCirc.getY() - 10);
-		} else {
-			if (newCirc.getY() > stage.getHeight()) {
-				jumping = false;
-			} else {
-				newCirc.setY(newCirc.getY() + 10);
-			}
-		}
-	} else {
-		if (newCirc.getY() > stage.getHeight()) {
-		} else {
-			newCirc.setY(newCirc.getY() + 10);
-		}
+function move() {
+	if (up) {
+		newCirc.setY(newCirc.getY()-speed);
 	}
-}
-
-function jump() {
-	currJumpHeight = 0;
-	jumping = true;
+	if (left) {
+		newCirc.setX(newCirc.getX()-speed);
+	}
+	if (down) {
+		newCirc.setY(newCirc.getY()+speed);
+	}
+	if (right) {
+		newCirc.setX(newCirc.getX()+speed);
+	}
 }
 
 function keyDown(key) {
 	switch (key.keyCode) {
 		case 37:
 			console.log("left");
+			left = true;
 			break;
 		case 38:
 			console.log("up");
-			jump();
+			up = true;
 			break;
 		case 39:
 			console.log("right");
+			right = true;
 			break;
 		case 40:
 			console.log("down");
+			down = true;
 			break;
 	}
 }
@@ -87,15 +93,19 @@ function keyUp(key) {
 	switch (key.keyCode) {
 		case 37:
 			console.log("left");
+			left = false;
 			break;
 		case 38:
 			console.log("up");
+			up = false;
 			break;
 		case 39:
 			console.log("right");
+			right = false;
 			break;
 		case 40:
 			console.log("down");
+			down = false;
 			break;
 	}
 }
