@@ -1,5 +1,6 @@
 var newCirc;
 var stage;
+var layer;
 var jumpHeight = 200;
 var currJumpHeight;
 var up = false;
@@ -7,6 +8,7 @@ var down = false;
 var left = false;
 var right = false;
 var speed = 10;
+var newRect;
 
 window.onload = function() {
 	layer = new Kinetic.Layer({
@@ -38,7 +40,7 @@ window.onload = function() {
 	layer.add(newCirc);
 	layer.add(newRect);
 	stage.draw();
-	window.setInterval(function() {redraw()}, 29.3);
+	window.setInterval(function() {redraw()}, 30);
 	$("body").keydown(function(key) {
 		keyDown(key);
 	});
@@ -48,7 +50,13 @@ window.onload = function() {
 }
 
 function redraw() {
-	console.log(stage.getIntersections(newCirc.getX(), newCirc.getY()));
+	var objects = stage.getIntersections(newCirc.getX(), newCirc.getY());
+	for (var i in objects) {
+		if (objects[i] == newCirc) {
+		} else {
+			objects[i].remove();
+		}
+	}
 	move();
 	stage.draw();
 }
