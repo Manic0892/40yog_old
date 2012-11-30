@@ -1,4 +1,4 @@
-var newCirc;
+var ball;
 var stage;
 var layer;
 var jumpHeight = 200;
@@ -8,7 +8,10 @@ var down = false;
 var left = false;
 var right = false;
 var speed = 10;
+var paddleSpeed = 25;
 var newRect;
+var paddle;
+var ball;
 
 window.onload = function() {
 	layer = new Kinetic.Layer({
@@ -16,29 +19,29 @@ window.onload = function() {
 	});
         stage = new Kinetic.Stage({
                 container: 'gameWrapper',
-                width: 1000,
+                width: 960,
                 height: 750
         });
 	stage.add(layer);
-	newCirc = new Kinetic.Rect({
+	ball = new Kinetic.Circle({
 		x: stage.getWidth() / 2,
 		y: stage.getHeight() / 2,
-		height:20,
-		width:20,
+		radius:10,
+		fill: 'red'
+	});
+	ball.dx = speed;
+	ball.dy = speed;
+	paddle = new Kinetic.Rect({
+		x: stage.getWidth()/2 - 100,
+		y: stage.getHeight()-30,
+		width: 200,
+		height: 20,
 		fill: 'red',
 		stroke: 'black',
-		strokeWidth: 4,
+		strokeWidth: 4
 	});
-	newRect = new Kinetic.Circle({
-		x:100,
-		y:100,
-		radius:75,
-		fill:'blue',
-		stroke: 'black',
-		strokeWidth:4
-	});
-	layer.add(newCirc);
-	layer.add(newRect);
+	layer.add(ball);
+	layer.add(paddle);
 	stage.draw();
 	window.setInterval(function() {redraw()}, 30);
 	$("body").keydown(function(key) {
@@ -47,32 +50,40 @@ window.onload = function() {
 	$("body").keyup(function(key) {
 		keyUp(key);
 	});
+	setupLevel();
 }
 
 function redraw() {
-	var objects = stage.getIntersections(newCirc.getX(), newCirc.getY());
+	var objects = stage.getIntersections(ball.getX(), ball.getY());
+	var isHittingPaddle;
 	for (var i in objects) {
-		if (objects[i] == newCirc) {
+		if (objects[i] == ball) {
+		} else if (objects[i] == paddle) {
+			isHittingPaddle = true;
 		} else {
 			objects[i].remove();
+			ball.dx, ball.dy *= -1;
 		}
 	}
+	moveBall(isHittingPaddle);
 	move();
 	stage.draw();
 }
 
+function moveBall(rebound) {
+	if (rebound) ball.dx, ball.dy *= -1;
+	if (ball.getY() <= 0) ball.dx, ball.dy *= -1;
+	if (ball.getX() <= 0 || ball.getX() >= stage.getWidth()) ball.dx *= -1;
+	ball.setX(ball.getX()+ball.dx);
+	ball.setY(ball.getY()+ball.dy);
+}
+
 function move() {
-	if (up) {
-		newCirc.setY(newCirc.getY()-speed);
+	if (left && paddle.getX() - paddle.getStrokeWidth() >= 0) {
+		paddle.setX(paddle.getX()-paddleSpeed);
 	}
-	if (left) {
-		newCirc.setX(newCirc.getX()-speed);
-	}
-	if (down) {
-		newCirc.setY(newCirc.getY()+speed);
-	}
-	if (right) {
-		newCirc.setX(newCirc.getX()+speed);
+	if (right && paddle.getX() + paddle.getWidth() + paddle.getStrokeWidth() <= stage.getWidth()) {
+		paddle.setX(paddle.getX()+paddleSpeed);
 	}
 }
 
@@ -116,4 +127,23 @@ function keyUp(key) {
 			down = false;
 			break;
 	}
+}
+function setupLevel() {
+	var iterator = 0;
+	for (var i = 0; i < 32; i++) {
+		var newRect = new Kinetic.Rect({
+			x: iterator,
+			y: 0,
+			height:20,
+			width:30,
+			fill: 'rgb(' + 8*i + ',' + 8*i + ',' + 8*i + ')',
+			stroke: 'red',
+			strokeWidth: 5
+		});
+		layer.add(newRect);
+		iterator += 30;
+	}
+}
+function handleCollisions() {
+	
 }

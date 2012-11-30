@@ -1,12 +1,12 @@
 canvas {
 	border: 1px solid black;
-	width:1000;
-	height:750;
+	width:960px;
+	height:750px;
 }
 
 #gameWrapper {
         margin-left: auto;
         margin-right: auto;
         padding: 10px;
-	width:1000px;
+	width:960px;
 }
