@@ -43,7 +43,6 @@ window.onload = function() {
 	layer.add(ball);
 	layer.add(paddle);
 	stage.draw();
-	window.setInterval(function() {redraw()}, 30);
 	$("body").keydown(function(key) {
 		keyDown(key);
 	});
@@ -51,6 +50,7 @@ window.onload = function() {
 		keyUp(key);
 	});
 	setupLevel();
+	window.setInterval(function() {redraw()}, 30);
 }
 
 function redraw() {
@@ -130,7 +130,7 @@ function keyUp(key) {
 }
 function setupLevel() {
 	var iterator = 0;
-	for (var i = 0; i < 32; i++) {
+	for (var i = 0; i < 2; i++) {
 		var newRect = new Kinetic.Rect({
 			x: iterator,
 			y: 0,
