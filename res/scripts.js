@@ -44,20 +44,6 @@ window.onload = function() {
 		stroke: 'black',
 		strokeWidth: 4
 	});
-	var newImage = new Image();
-	newImage.src = 'Mona_Lisa.jpg';
-	newImage.onload = function() {
-		bgimg = new Kinetic.Image({
-			x: 0,
-			y: 0,
-			height: stage.getHeight(),
-			width: stage.getWidth(),
-			image: newImage
-		});
-		bgimg.moveToBottom();
-		bglayer.add(bgimg);
-		console.log("here");
-	}
 	layer.add(ball);
 	layer.add(paddle);
 	stage.draw();
@@ -69,10 +55,11 @@ window.onload = function() {
 	});
 	setupLevel();
 	window.setInterval(function() {redraw()}, 30);
+	imageHandling();
 }
 
 function redraw() {
-	var objects = stage.getIntersections(ball.getX(), ball.getY());
+	var objects = layer.getIntersections(ball.getX(), ball.getY());
 	var isHittingPaddle;
 	for (var i in objects) {
 		if (objects[i] == ball || objects[i] == bgimg) {
@@ -85,7 +72,8 @@ function redraw() {
 	}
 	moveBall(isHittingPaddle);
 	move();
-	stage.draw();
+	//imageHandling();
+	layer.draw();
 }
 
 function moveBall(rebound) {
@@ -148,7 +136,7 @@ function keyUp(key) {
 }
 function setupLevel() {
 	var iterator = 0;
-	for (var i = 0; i < 2; i++) {
+	for (var i = 0; i < 32; i++) {
 		var newRect = new Kinetic.Rect({
 			x: iterator,
 			y: 0,
@@ -164,4 +152,68 @@ function setupLevel() {
 }
 function handleCollisions() {
 	
+}
+
+function imageHandling() {
+	// Create an image object.      
+	var image = new Image();
+	
+	// Can't do anything until the image loads.
+	// Hook its onload event before setting the src property.
+	image.onload = function() {
+		
+		// Create a canvas.
+		
+		// Get the drawing context.
+		var ctx = bglayer.getContext();
+		
+		// Get the width/height of the image and set
+		// the canvas to the same size.
+		var width = image.width;
+		var height = image.height;
+		
+		stage.width = width;
+		stage.height = height;
+		
+		// Draw the image to the canvas.
+		ctx.drawImage(image, 0, 0);
+		
+		// Get the image data from the canvas, which now
+		// contains the contents of the image.
+		var imageData = ctx.getImageData(0, 0, width, height);
+		
+		// The actual RGBA values are stored in the data property.
+		var pixelData = imageData.data;
+		
+		// 4 bytes per pixels - RGBA
+		var bytesPerPixel = 4;
+		
+		// Loop through every pixel - this could be slow for huge images.
+		for(var y = 0; y < height; y++) {
+			for(var x = 0; x < width; x++) {
+				// Get the index of the first byte of the pixel.
+				var startIdx = (y * bytesPerPixel * width) + (x * bytesPerPixel);
+				
+				// Get the RGB values.
+				var red = pixelData[startIdx];
+				var green = pixelData[startIdx + 1];
+				var blue = pixelData[startIdx + 2];
+				
+				// Convert to grayscale.  An explanation of the ratios
+				// can be found here: http://en.wikipedia.org/wiki/Grayscale
+				var grayScale = (red * 0.3) + (green * 0.59) + (blue * .11);  
+				
+				// Set each RGB value to the same grayscale value.
+				pixelData[startIdx] = grayScale;
+				pixelData[startIdx + 1] = grayScale;
+				pixelData[startIdx + 2] = grayScale;
+			}
+		}
+		
+		// Draw the converted image data back to the canvas.
+		ctx.putImageData(imageData, -200, -200);
+	};
+	
+	// Load an image to convert.
+	image.src = "Mona_Lisa.jpg";
 }
