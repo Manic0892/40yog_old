@@ -150,12 +150,16 @@ function setupLevel() {
 				y: yiterator,
 				height:20,
 				width:30,
-				fill: 'rgb(' + 8*i + ',' + 8*i + ',' + 8*i + ')',
+				fill: 'rgb(' + (256-8*i) + ',' + (256-8*i) + ',' + (256-8*i) + ')',
 				stroke: 'red',
 				strokeWidth: 5,
 			});
 			newRect.value = divisor;
 			newRect.xindex = i;
+			newRect.on('click', function() {
+				ball.setX(this.getX());
+				ball.setY(this.getY());
+			});
 			level[i][j] = newRect;
 			level[i][j].deleted = false;
 			layer.add(newRect);
@@ -247,11 +251,9 @@ function updateImage(fill, value) {
 }
 
 function updateHisto(fill, value) {
-	for (i = fill; i < fill+7; i++) {
-		console.log(modHisto[i]);
+	for (i = fill; i < fill+8; i++) {
 		modHisto[i] -= value;
 		if (modHisto[i] < 0) modHisto[i] = 0;
-		console.log(modHisto[i]);
 	}
 }
 
