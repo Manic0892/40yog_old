@@ -199,7 +199,6 @@ function hitTesting() {
 }
 
 function updateImage(fill, value) {
-	console.log(originalHisto);
 	updateHisto(fill, value);
 	var P1 = [];
 	var P2 = [];
@@ -226,12 +225,16 @@ function updateImage(fill, value) {
 	var imageData = imgdata;
 	var pixelData = imageData.data;
 	
-	for (var x=0;x < height; x++) {
-		for (var y = 0;y < width; y++) {
+	for (var x=0;x < width; x++) {
+		for (var y = 0;y < height; y++) {
 			
 			var startIdx = (y * 4 * width) + (x * 4);
 			
-			var grayVal = T[grayVal];
+			var imageData = imgdata;
+			var pixelData = imageData.data;
+			var grayVal = pixelData[startIdx]
+			
+			grayVal = T[grayVal];
 			if (grayVal >= 255)
 				grayVal = 255;
 			if (grayVal <= 0)
@@ -285,11 +288,11 @@ function updateImage(fill, value) {
 }
 
 function updateHisto(fill, value) {
-	console.log(modHisto[8]);
 	for (i = fill; i < fill+8; i++) {
-		modHisto[i] -= value;
-		if (modHisto[i] < 0) modHisto[i] = 0;
 		console.log(modHisto[i]);
+		modHisto[i] -= value;
+		console.log(modHisto[i]);
+		if (modHisto[i] < 0) modHisto[i] = 0;
 	}
 }
 
@@ -309,7 +312,6 @@ function CDF(P, histo) {
 	for(var i = 0;i < k;i++) {
 		c += histo[i];
 		P[i] = c/n;
-		console.log(P[i]);
 	}
 	return P;
 }
