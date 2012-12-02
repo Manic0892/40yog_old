@@ -145,7 +145,7 @@ function setupLevel() {
 				strokeWidth: 5
 			});
 			level[i][j] = newRect;
-			console.log(level[i][j]);
+			level[i][j].deleted = false;
 			layer.add(newRect);
 			yiterator += 20;
 		}
@@ -168,23 +168,23 @@ function hitTesting() {
 	
 	var x = ball.getX();
 	var y = ball.getY();
-	var index = 0;
-	for (var i = 0; i < 32; i++) {
-		var j = i*30;
-		if (x > j && x < j+30) {
-			index = i;
-			i = 32;
-		}
-	}
-	for (var i = 0; i < level[index].length; i++) {
-		var j = i*20;
-		if (y > j && y < j+20) {
-			console.log('here');
-			level[index][i].remove();
-			i = level[index].length;
-			layer.draw();
-			//ball.dx *= -1;
-			ball.dy *= -1;
+	var xi = x%30;
+	x -= xi;
+	xi  = x/30;
+	var yi = y%20;
+	y -= yi;
+	yi = y/20;
+	
+	console.log(xi+" "+yi);
+	
+	if (xi < level.length) {
+		if (yi < level[xi].length) {
+			if (!level[xi][yi].deleted) {
+				level[xi][yi].remove();
+				level[xi][yi].deleted = true;
+				layer.draw();
+				ball.dy *= -1;
+			}
 		}
 	}
 	
