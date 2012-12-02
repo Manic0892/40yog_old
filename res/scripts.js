@@ -200,6 +200,10 @@ function moveBullet() {
 				}
 			}
 		}
+		if (bullet.getY() < -30) {
+			shot = false;
+			bullet.remove();
+		}
 	}
 	
 }
@@ -240,7 +244,6 @@ function move() {
 	}
 	if (gun) {
 		if (spacePressed) {
-			spacePressed = false;
 			if (!shot) {
 				bullet = new Kinetic.Rect({
 					width: 5,
@@ -263,9 +266,9 @@ function move() {
 			isSpawned  = true;
 			ball.dx = speed;
 			ball.dy = -speed;
-			spacePressed = false;
 		}
 	}
+	spacePressed = false;
 }
 
 function keyDown(key) {
