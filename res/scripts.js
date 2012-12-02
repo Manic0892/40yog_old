@@ -21,6 +21,15 @@ var modHisto;
 var imgdata;
 
 
+/*
+ *TODO:
+ *powerups
+ *title screen
+ *uploading?
+ *access control?
+ */
+
+
 window.onload = function() {
 	actlayer = new Kinetic.Layer({});
 	bglayer = new Kinetic.Layer({});
