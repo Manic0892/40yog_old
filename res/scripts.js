@@ -18,6 +18,7 @@ var actlayer;
 var level;
 var originalHisto;
 var modHisto;
+var imgdata;
 
 
 window.onload = function() {
@@ -152,7 +153,6 @@ function setupLevel() {
 				fill: 'rgb(' + 8*i + ',' + 8*i + ',' + 8*i + ')',
 				stroke: 'red',
 				strokeWidth: 5,
-				
 			});
 			newRect.value = divisor;
 			newRect.xindex = i;
@@ -180,7 +180,7 @@ function hitTesting() {
 		if (yi < level[xi].length) {
 			if (!level[xi][yi].deleted) {
 				console.log(level[xi][yi].xindex);
-				updateImage(level[xi][yi].xindex*8);
+				updateImage(level[xi][yi].xindex*8, level[xi][yi].value);
 				level[xi][yi].remove();
 				level[xi][yi].deleted = true;
 				layer.draw();
@@ -198,7 +198,12 @@ function hitTesting() {
 	return paddled;
 }
 
-function updateImage(fill) {
+function updateImage(fill, value) {
+	updateHisto(fill, value);
+	var P1 = [];
+	var P2 = [];
+	P1 = CDF(P1, originalHisto);
+	P2 = CDF(P2, modHisto);
 	var ctx = bglayer.getContext();	
 		
 	// Get the width/height of the image and set
@@ -206,41 +211,103 @@ function updateImage(fill) {
 	var width = stage.getWidth();
 	var height = stage.getHeight();
 	
-	
-	// Draw the image to the canvas.
-	//ctx.drawImage(image, 0, 0);
-	
-	// Get the image data from the canvas, which now
-	// contains the contents of the image.
-	var imageData = ctx.getImageData(0, 0, width, height);
-	
-	// The actual RGBA values are stored in the data property.
+	var T = [256];
+
+	for (var a = 0; a <= 256-1; a++) {
+		var j = 256-1;
+		do {
+			T[a] = j;
+			j -= 1;
+		}
+		while ((j >= 0) && (P2[a] <= P1[j]));
+	}
+
+	var imageData = imgdata;
 	var pixelData = imageData.data;
 	
-	// 4 bytes per pixels - RGBA
-	var bytesPerPixel = 4;
-	
-	// Loop through every pixel - this could be slow for huge images.
-	for(var y = 0; y < height; y++) {
-		for(var x = 0; x < width; x++) {
-			// Get the index of the first byte of the pixel.
-			var startIdx = (y * bytesPerPixel * width) + (x * bytesPerPixel);
+	for (var x=0;x < height; x++) {
+		for (var y = 0;y < width; y++) {
 			
+			var startIdx = (y * 4 * width) + (x * 4);
 			
-			// Set each RGB value to the same grayscale value.
-			pixelData[startIdx] = fill;
-			pixelData[startIdx + 1] = fill;
-			pixelData[startIdx + 2] = fill;
+			var grayVal = T[grayVal];
+			if (grayVal >= 255)
+				grayVal = 255;
+			if (grayVal <= 0)
+				grayVal = 0;
+			pixelData[startIdx] = grayVal;  //This sets the target pixel with the modified grayVal
+			pixelData[startIdx + 1] = grayVal;
+			pixelData[startIdx + 2] = grayVal;
 		}
 	}
 	
 	ctx.putImageData(imageData,0,0);
+	console.log(originalHisto);
 	
-	// Draw the converted image data back to the canvas.
-	//console.log(ctx.getImageData(0,0,width,height).data);
-	//bglayer.getContext().putImageData(imageData, 0, 0);
-	//console.log(bglayer.getContext().getImageData(0,0,width,height).data);
-	//bglayer.draw();
+	////tarImageLabel->setPixmap(QPixmap::fromImage(*tarImage));
+	////tarImageLabel->adjustSize();
+	//
+	//// Draw the image to the canvas.
+	////ctx.drawImage(image, 0, 0);
+	//
+	//// Get the image data from the canvas, which now
+	//// contains the contents of the image.
+	//var imageData = ctx.getImageData(0, 0, width, height);
+	//
+	//// The actual RGBA values are stored in the data property.
+	//var pixelData = imageData.data;
+	//
+	//// 4 bytes per pixels - RGBA
+	//var bytesPerPixel = 4;
+	//
+	//// Loop through every pixel - this could be slow for huge images.
+	//for(var y = 0; y < height; y++) {
+	//	for(var x = 0; x < width; x++) {
+	//		// Get the index of the first byte of the pixel.
+	//		var startIdx = (y * bytesPerPixel * width) + (x * bytesPerPixel);
+	//		
+	//		
+	//		// Set each RGB value to the same grayscale value.
+	//		pixelData[startIdx] = fill;
+	//		pixelData[startIdx + 1] = fill;
+	//		pixelData[startIdx + 2] = fill;
+	//	}
+	//}
+	//
+	//ctx.putImageData(imageData,0,0);
+	//
+	//// Draw the converted image data back to the canvas.
+	////console.log(ctx.getImageData(0,0,width,height).data);
+	////bglayer.getContext().putImageData(imageData, 0, 0);
+	////console.log(bglayer.getContext().getImageData(0,0,width,height).data);
+	////bglayer.draw();
+}
+
+function updateHisto(fill, value) {
+	for (i = fill; i < fill+8; i++) {
+		modHisto[i] -= value;
+		if (modHisto[i] < 0) modHisto[i] = 0;
+	}
+}
+
+function CDF(P, histo) {
+	var k = 256;
+	
+	for (var i = 0; i < k; i++) {
+		P[i] = 0;
+	}
+	
+	var n = 0;
+	var c = 0;
+	
+	for(var i = 0; i < k; i++) {
+		n += parseInt(histo[i]);
+	}
+	for(var i = 0;i < k;i++) {
+		c += histo[i];
+		P[i] = c/n;
+	}
+	return P;
 }
 
 function setUpImage() {
@@ -289,6 +356,7 @@ function setUpImage() {
 		// Get the image data from the canvas, which now
 		// contains the contents of the image.
 		var imageData = ctx.getImageData(0, 0, width, height);
+		 imgdata = imageData;
 		
 		// The actual RGBA values are stored in the data property.
 		var pixelData = imageData.data;
