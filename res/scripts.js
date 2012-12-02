@@ -139,7 +139,7 @@ function setupLevel() {
 		for (var j = 8*i; j < 8*(i+1); j++) {
 			if (peak < originalHisto[j]) peak = originalHisto[j];
 		}
-		var divisor = 10;
+		var divisor = 1;
 		while (peak/divisor > 20) {
 			divisor *= 5;
 		}
@@ -179,7 +179,6 @@ function hitTesting() {
 	if (xi < level.length) {
 		if (yi < level[xi].length) {
 			if (!level[xi][yi].deleted) {
-				console.log(level[xi][yi].xindex);
 				updateImage(level[xi][yi].xindex*8, level[xi][yi].value);
 				level[xi][yi].remove();
 				level[xi][yi].deleted = true;
@@ -200,8 +199,8 @@ function hitTesting() {
 
 function updateImage(fill, value) {
 	updateHisto(fill, value);
-	var P1 = [];
-	var P2 = [];
+	var P1 = [256];
+	var P2 = [256];
 	P1 = CDF(P1, originalHisto);
 	P2 = CDF(P2, modHisto);
 	var ctx = bglayer.getContext();	
@@ -211,13 +210,13 @@ function updateImage(fill, value) {
 	var width = stage.getWidth();
 	var height = stage.getHeight();
 	
-	var T = [256];
+	var T = [];
 
 	for (var a = 0; a <= 256-1; a++) {
 		var j = 256-1;
 		do {
 			T[a] = j;
-			j -= 1;
+			j --;
 		}
 		while ((j >= 0) && (P2[a] <= P1[j]));
 	}
@@ -230,14 +229,13 @@ function updateImage(fill, value) {
 			
 			var startIdx = (y * 4 * width) + (x * 4);
 			
-			var imageData = imgdata;
-			var pixelData = imageData.data;
-			var grayVal = pixelData[startIdx]
-			
+			var grayVal = pixelData[startIdx];
+			//console.log('a ' + grayVal);
 			grayVal = T[grayVal];
-			if (grayVal >= 255)
+			//console.log('b ' + grayVal);
+			if (grayVal > 255)
 				grayVal = 255;
-			if (grayVal <= 0)
+			if (grayVal < 0)
 				grayVal = 0;
 			pixelData[startIdx] = grayVal;  //This sets the target pixel with the modified grayVal
 			pixelData[startIdx + 1] = grayVal;
@@ -246,53 +244,14 @@ function updateImage(fill, value) {
 	}
 	
 	ctx.putImageData(imageData,0,0);
-	console.log(originalHisto);
-	
-	////tarImageLabel->setPixmap(QPixmap::fromImage(*tarImage));
-	////tarImageLabel->adjustSize();
-	//
-	//// Draw the image to the canvas.
-	////ctx.drawImage(image, 0, 0);
-	//
-	//// Get the image data from the canvas, which now
-	//// contains the contents of the image.
-	//var imageData = ctx.getImageData(0, 0, width, height);
-	//
-	//// The actual RGBA values are stored in the data property.
-	//var pixelData = imageData.data;
-	//
-	//// 4 bytes per pixels - RGBA
-	//var bytesPerPixel = 4;
-	//
-	//// Loop through every pixel - this could be slow for huge images.
-	//for(var y = 0; y < height; y++) {
-	//	for(var x = 0; x < width; x++) {
-	//		// Get the index of the first byte of the pixel.
-	//		var startIdx = (y * bytesPerPixel * width) + (x * bytesPerPixel);
-	//		
-	//		
-	//		// Set each RGB value to the same grayscale value.
-	//		pixelData[startIdx] = fill;
-	//		pixelData[startIdx + 1] = fill;
-	//		pixelData[startIdx + 2] = fill;
-	//	}
-	//}
-	//
-	//ctx.putImageData(imageData,0,0);
-	//
-	//// Draw the converted image data back to the canvas.
-	////console.log(ctx.getImageData(0,0,width,height).data);
-	////bglayer.getContext().putImageData(imageData, 0, 0);
-	////console.log(bglayer.getContext().getImageData(0,0,width,height).data);
-	////bglayer.draw();
 }
 
 function updateHisto(fill, value) {
-	for (i = fill; i < fill+8; i++) {
+	for (i = fill; i < fill+7; i++) {
 		console.log(modHisto[i]);
 		modHisto[i] -= value;
-		console.log(modHisto[i]);
 		if (modHisto[i] < 0) modHisto[i] = 0;
+		console.log(modHisto[i]);
 	}
 }
 
@@ -307,7 +266,7 @@ function CDF(P, histo) {
 	var c = 0;
 	
 	for(var i = 0; i < k; i++) {
-		n += parseInt(histo[i]);
+		n += Math.round(histo[i]);
 	}
 	for(var i = 0;i < k;i++) {
 		c += histo[i];
@@ -398,8 +357,6 @@ function setUpImage() {
 			}
 		}
 		
-		console.log(originalHisto);
-		console.log(modHisto);
 		
 		ctx.putImageData(imageData,0,0);
 		setupLevel();
@@ -412,5 +369,5 @@ function setUpImage() {
 	};
 	
 	// Load an image to convert.
-	image.src = "Mona_Lisa.jpg";
+	image.src = "test.bmp";
 }
