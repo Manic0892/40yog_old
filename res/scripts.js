@@ -16,6 +16,8 @@ var bgimg;
 var bglayer;
 var actlayer;
 var level;
+var originalHisto;
+var modHisto;
 
 
 window.onload = function() {
@@ -55,9 +57,8 @@ window.onload = function() {
 	$("body").keyup(function(key) {
 		keyUp(key);
 	});
-	setupLevel();
-	window.setInterval(function() {redraw()}, 30);
-	imageHandling();
+	setUpImage();
+	
 	stage.draw();
 }
 
@@ -65,7 +66,6 @@ function redraw() {
 	var isHittingPaddle = hitTesting();
 	moveBall(isHittingPaddle);
 	move();
-	//imageHandling();
 	actlayer.draw();
 }
 
@@ -134,7 +134,16 @@ function setupLevel() {
 	for (var i = 0; i < 32; i++) {
 		level[i] = [];
 		var yiterator = 0;
-		for (var j = 0; j < 10; j++) {
+		var peak = 0;
+		for (var j = 8*i; j < 8*(i+1); j++) {
+			if (peak < originalHisto[j]) peak = originalHisto[j];
+		}
+		var divisor = 10;
+		while (peak/divisor > 20) {
+			divisor *= 5;
+		}
+		peak /= divisor;
+		for (var j = 0; j < peak; j++) {
 			var newRect = new Kinetic.Rect({
 				x: iterator,
 				y: yiterator,
@@ -142,8 +151,11 @@ function setupLevel() {
 				width:30,
 				fill: 'rgb(' + 8*i + ',' + 8*i + ',' + 8*i + ')',
 				stroke: 'red',
-				strokeWidth: 5
+				strokeWidth: 5,
+				
 			});
+			newRect.value = divisor;
+			newRect.xindex = i;
 			level[i][j] = newRect;
 			level[i][j].deleted = false;
 			layer.add(newRect);
@@ -151,21 +163,10 @@ function setupLevel() {
 		}
 		iterator += 30;
 	}
+	layer.draw();
+	window.setInterval(function() {redraw()}, 30);
 }
 function hitTesting() {
-	//var objects = layer.getIntersections(ball.getX(), ball.getY());
-	//var isHittingPaddle;
-	//for (var i in objects) {
-	//	if (objects[i] == ball || objects[i] == bgimg) {
-	//	} else if (objects[i] == paddle) {
-	//		isHittingPaddle = true;
-	//	} else {
-	//		objects[i].remove();
-	//		ball.dx, ball.dy *= -1;
-	//	}
-	//}
-	//return isHittingPaddle;
-	
 	var x = ball.getX();
 	var y = ball.getY();
 	var xi = x%30;
@@ -175,11 +176,11 @@ function hitTesting() {
 	y -= yi;
 	yi = y/20;
 	
-	console.log(xi+" "+yi);
-	
 	if (xi < level.length) {
 		if (yi < level[xi].length) {
 			if (!level[xi][yi].deleted) {
+				console.log(level[xi][yi].xindex);
+				updateImage(level[xi][yi].xindex*8);
 				level[xi][yi].remove();
 				level[xi][yi].deleted = true;
 				layer.draw();
@@ -197,29 +198,93 @@ function hitTesting() {
 	return paddled;
 }
 
-function imageHandling() {
+function updateImage(fill) {
+	var ctx = bglayer.getContext();	
+		
+	// Get the width/height of the image and set
+	// the canvas to the same size.
+	var width = stage.getWidth();
+	var height = stage.getHeight();
+	
+	
+	// Draw the image to the canvas.
+	//ctx.drawImage(image, 0, 0);
+	
+	// Get the image data from the canvas, which now
+	// contains the contents of the image.
+	var imageData = ctx.getImageData(0, 0, width, height);
+	
+	// The actual RGBA values are stored in the data property.
+	var pixelData = imageData.data;
+	
+	// 4 bytes per pixels - RGBA
+	var bytesPerPixel = 4;
+	
+	// Loop through every pixel - this could be slow for huge images.
+	for(var y = 0; y < height; y++) {
+		for(var x = 0; x < width; x++) {
+			// Get the index of the first byte of the pixel.
+			var startIdx = (y * bytesPerPixel * width) + (x * bytesPerPixel);
+			
+			
+			// Set each RGB value to the same grayscale value.
+			pixelData[startIdx] = fill;
+			pixelData[startIdx + 1] = fill;
+			pixelData[startIdx + 2] = fill;
+		}
+	}
+	
+	ctx.putImageData(imageData,0,0);
+	
+	// Draw the converted image data back to the canvas.
+	//console.log(ctx.getImageData(0,0,width,height).data);
+	//bglayer.getContext().putImageData(imageData, 0, 0);
+	//console.log(bglayer.getContext().getImageData(0,0,width,height).data);
+	//bglayer.draw();
+}
+
+function setUpImage() {
 	// Create an image object.      
 	var image = new Image();
+	originalHisto = [];
+	modHisto = [];
 	
 	// Can't do anything until the image loads.
 	// Hook its onload event before setting the src property.
 	image.onload = function() {
 		
+		//var imagePlacer = new Kinetic.Image({
+		//	image: image,
+		//	x: 0,
+		//	y: 0,
+		//	height: stage.getHeight(),
+		//	width: stage.getWidth()
+		//});
+		//
+		//bglayer.add(imagePlacer);
+		
 		// Create a canvas.
 		
 		// Get the drawing context.
+		
+		for (var i = 0; i < 256; i++) {
+			originalHisto[i] = 0;
+			modHisto[i] = 0;
+		}
+		
 		var ctx = bglayer.getContext();
+		
 		
 		// Get the width/height of the image and set
 		// the canvas to the same size.
-		var width = image.width;
-		var height = image.height;
+		var width = stage.getWidth();
+		var height = stage.getHeight();
 		
-		stage.width = width;
-		stage.height = height;
+		ctx.drawImage(image,0,0,width,height);
+		
 		
 		// Draw the image to the canvas.
-		ctx.drawImage(image, 0, 0);
+		//ctx.drawImage(image, 0, 0);
 		
 		// Get the image data from the canvas, which now
 		// contains the contents of the image.
@@ -244,7 +309,13 @@ function imageHandling() {
 				
 				// Convert to grayscale.  An explanation of the ratios
 				// can be found here: http://en.wikipedia.org/wiki/Grayscale
-				var grayScale = (red * 0.3) + (green * 0.59) + (blue * .11);  
+				var grayScale = (red * 0.3) + (green * 0.59) + (blue * .11);
+				if (grayScale < 0) grayScale = 0;
+				if (grayScale > 255) grayScale = 255;
+				var modulus = grayScale%8;
+				grayScale -= modulus;
+				originalHisto[grayScale]++;
+				modHisto[grayScale]++;
 				
 				// Set each RGB value to the same grayscale value.
 				pixelData[startIdx] = grayScale;
@@ -253,8 +324,14 @@ function imageHandling() {
 			}
 		}
 		
+		ctx.putImageData(imageData,0,0);
+		setupLevel();
+		
 		// Draw the converted image data back to the canvas.
-		ctx.putImageData(imageData, -200, -200);
+		//console.log(ctx.getImageData(0,0,width,height).data);
+		//bglayer.getContext().putImageData(imageData, 0, 0);
+		//console.log(bglayer.getContext().getImageData(0,0,width,height).data);
+		//bglayer.draw();
 	};
 	
 	// Load an image to convert.
