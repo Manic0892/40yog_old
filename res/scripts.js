@@ -25,6 +25,7 @@ var isSpawned = false;
 var launch = false;
 var powerupList = [];
 var bullet;
+var lives = 5;
 
 var shot = false;
 
@@ -84,6 +85,7 @@ window.onload = function() {
 		keyUp(key);
 	});
 	setUpImage();
+	updateStatus();
 	
 	stage.draw();
 }
@@ -158,12 +160,10 @@ function pickupPowerup() {
 						fireball = false;
 					}, 7000);
 					break;
-				//case 1:
-				//	fireball = true;
-				//	fireball.timeout = window.setTimeout(function() {
-				//		fireball = false;
-				//	}, 10000);
-				//	break;
+				case 1:
+					lives++;
+					updateStatus();
+					break;
 				case 2:
 					gun = true;
 					gun.timeout = window.setTimeout(function() {
@@ -172,6 +172,7 @@ function pickupPowerup() {
 					break;
 			}
 			powerupList[i].remove();
+			powerupList[i].setY(5000);
 		}
 	}
 }
@@ -210,7 +211,11 @@ function moveBullet() {
 
 function moveBall(rebound) {
 	if (ball.getY() <= 0) ball.dx, ball.dy *= -1;
-	if (ball.getY() > stage.getHeight() + 100) isSpawned = false;//death
+	if (ball.getY() > stage.getHeight() + 100){
+		lives--;
+		updateStatus();
+		isSpawned = false;//death
+	}
 	if (ball.getX() <= 0 || ball.getX() >= stage.getWidth()) ball.dx *= -1;
 	if (rebound) {
 		ball.dy *= -1;
@@ -560,4 +565,8 @@ function setUpImage() {
 	
 	// Load an image to convert.
 	image.src = "Mona_Lisa.jpg";
+}
+
+function updateStatus() {
+	$('#status').text('Lives: ' + lives);
 }
