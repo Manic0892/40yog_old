@@ -12,16 +12,20 @@ var paddleSpeed = 25;
 var newRect;
 var paddle;
 var ball;
+var bgimg;
+var bglayer;
+
 
 window.onload = function() {
-	layer = new Kinetic.Layer({
-		fill: 'blue'
-	});
+	
+	bglayer = new Kinetic.Layer({});
+	layer = new Kinetic.Layer({});
         stage = new Kinetic.Stage({
                 container: 'gameWrapper',
                 width: 960,
                 height: 750
         });
+	stage.add(bglayer);
 	stage.add(layer);
 	ball = new Kinetic.Circle({
 		x: stage.getWidth() / 2,
@@ -40,6 +44,20 @@ window.onload = function() {
 		stroke: 'black',
 		strokeWidth: 4
 	});
+	var newImage = new Image();
+	newImage.src = 'Mona_Lisa.jpg';
+	newImage.onload = function() {
+		bgimg = new Kinetic.Image({
+			x: 0,
+			y: 0,
+			height: stage.getHeight(),
+			width: stage.getWidth(),
+			image: newImage
+		});
+		bgimg.moveToBottom();
+		bglayer.add(bgimg);
+		console.log("here");
+	}
 	layer.add(ball);
 	layer.add(paddle);
 	stage.draw();
@@ -57,7 +75,7 @@ function redraw() {
 	var objects = stage.getIntersections(ball.getX(), ball.getY());
 	var isHittingPaddle;
 	for (var i in objects) {
-		if (objects[i] == ball) {
+		if (objects[i] == ball || objects[i] == bgimg) {
 		} else if (objects[i] == paddle) {
 			isHittingPaddle = true;
 		} else {
