@@ -145,6 +145,7 @@ function setupLevel() {
 				strokeWidth: 5
 			});
 			level[i][j] = newRect;
+			console.log(level[i][j]);
 			layer.add(newRect);
 			yiterator += 20;
 		}
@@ -178,7 +179,12 @@ function hitTesting() {
 	for (var i = 0; i < level[index].length; i++) {
 		var j = i*20;
 		if (y > j && y < j+20) {
-			level[index][j].remove();
+			console.log('here');
+			level[index][i].remove();
+			i = level[index].length;
+			layer.draw();
+			//ball.dx *= -1;
+			ball.dy *= -1;
 		}
 	}
 	
