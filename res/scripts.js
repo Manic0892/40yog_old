@@ -7,6 +7,7 @@ var up = false;
 var down = false;
 var left = false;
 var right = false;
+var spacePressed = false;
 var speed = 10;
 var paddleSpeed = 25;
 var newRect;
@@ -15,10 +16,21 @@ var ball;
 var bgimg;
 var bglayer;
 var actlayer;
+var powerlayer;
 var level;
 var originalHisto;
 var modHisto;
 var imgdata;
+var isSpawned = false;
+var launch = false;
+var powerupList = [];
+var bullet;
+
+var shot = false;
+
+var gun = false;
+var floor = false;
+var fireball = false;
 
 
 /*
@@ -34,6 +46,7 @@ window.onload = function() {
 	actlayer = new Kinetic.Layer({});
 	bglayer = new Kinetic.Layer({});
 	layer = new Kinetic.Layer({});
+	powerlayer = new Kinetic.Layer({});
         stage = new Kinetic.Stage({
                 container: 'gameWrapper',
                 width: 960,
@@ -42,14 +55,17 @@ window.onload = function() {
 	stage.add(bglayer);
 	stage.add(layer);
 	stage.add(actlayer);
+	stage.add(powerlayer);
 	ball = new Kinetic.Circle({
 		x: stage.getWidth() / 2,
 		y: stage.getHeight() / 2,
 		radius:10,
-		fill: 'red'
+		fill: 'red',
+		stroke: 'black',
+		strokeWidth:4
 	});
-	ball.dx = speed;
-	ball.dy = speed;
+	ball.dx = 0;
+	ball.dy = 0;
 	paddle = new Kinetic.Rect({
 		x: stage.getWidth()/2 - 100,
 		y: stage.getHeight()-30,
@@ -73,16 +89,144 @@ window.onload = function() {
 }
 
 function redraw() {
+	powerups();
 	var isHittingPaddle = hitTesting();
 	moveBall(isHittingPaddle);
+	movePowerups();
+	pickupPowerup();
 	move();
+	moveBullet();
 	actlayer.draw();
+	powerlayer.draw();
+}
+
+function powerups() {
+	if (Math.floor(Math.random()*200) == Math.floor(Math.random()*100)) {
+		var type = Math.floor(Math.random()*3);
+		var fill;
+		var stroke;
+		switch(type) {
+			case 0: //fireball
+				fill = 'red';
+				stroke = 'orange';
+				break;
+			case 1: //life
+				fill = 'red';
+				stroke = 'FFBAEF';
+				break;
+			case 2: //gun
+				fill = '00FF22';
+				stroke = 'b7faf0';
+				break;
+		}
+		newPowerup = new Kinetic.Circle({
+			x:(Math.floor(Math.random()*(stage.getWidth()))),
+			y:(Math.floor(Math.random()*(stage.getHeight()-stage.getHeight()/4))),
+			fill: fill,
+			radius: 15,
+			stroke: stroke,
+			strokeWidth:4,
+		});
+		newPowerup.type = type;
+		newPowerup.dx = Math.floor(Math.random()*11) - 5;
+		powerlayer.add(newPowerup);
+		powerupList.push(newPowerup);
+	}
+}
+
+function movePowerups() {
+	for (i in powerupList) {
+		powerupList[i].setY(powerupList[i].getY()+4);
+		powerupList[i].dx = powerupList[i].dx + (Math.floor(Math.random()*3)) - 1;
+		if (powerupList[i].dx > 5) {
+			powerupList[i].dx = 5;
+		} else if (powerupList[i].dx < -5) {
+			powerupList[i].dx = -5;
+		}
+		if (powerupList[i].getX() <= 0 || powerupList[i].getX()+powerupList[i].getWidth() >= stage.getWidth()) powerupList[i].dx *= -1;
+		powerupList[i].setX(powerupList[i].getX() + powerupList[i].dx);
+	}
+}
+
+function pickupPowerup() {
+	for (i in powerupList) {
+		if (actlayer.getIntersections(powerupList[i].getX()+powerupList[i].getWidth()/2,powerupList[i].getY()+powerupList[i].getHeight()/2).length > 0) {
+			switch(powerupList[i].type) {
+				case 0:
+					fireball = true;
+					fireball.timeout = window.setTimeout(function() {
+						fireball = false;
+					}, 7000);
+					break;
+				//case 1:
+				//	fireball = true;
+				//	fireball.timeout = window.setTimeout(function() {
+				//		fireball = false;
+				//	}, 10000);
+				//	break;
+				case 2:
+					gun = true;
+					gun.timeout = window.setTimeout(function() {
+						gun = false;
+					}, 7000);
+					break;
+			}
+			powerupList[i].remove();
+		}
+	}
+}
+
+function moveBullet() {
+	if (shot) {
+		bullet.setY(bullet.getY() - 20);
+		var x = bullet.getX();
+		var y = bullet.getY();
+		var xi = x%30;
+		x -= xi;
+		xi  = x/30;
+		var yi = y%20;
+		y -= yi;
+		yi = y/20;
+		
+		if (xi < level.length) {
+			if (yi < level[xi].length) {
+				if (!level[xi][yi].deleted) {
+					updateImage(level[xi][yi].xindex*8, level[xi][yi].value);
+					level[xi][yi].remove();
+					level[xi][yi].deleted = true;
+					shot = false;
+					bullet.remove();
+					layer.draw();
+				}
+			}
+		}
+	}
+	
 }
 
 function moveBall(rebound) {
-	if (rebound) ball.dx, ball.dy *= -1;
 	if (ball.getY() <= 0) ball.dx, ball.dy *= -1;
+	if (ball.getY() > stage.getHeight() + 100) isSpawned = false;//death
 	if (ball.getX() <= 0 || ball.getX() >= stage.getWidth()) ball.dx *= -1;
+	if (rebound) {
+		ball.dy *= -1;
+		var ballTrueX = ball.getX() + ball.getWidth()/2;
+		var paddleTrueX = paddle.getX() + paddle.getWidth()/2;
+		if (ballTrueX < paddleTrueX - paddle.getWidth()/4)
+			ball.dx -= 20;
+		else if (ballTrueX < paddleTrueX - paddle.getWidth()/8) {
+			ball.dx -= 10;
+		} else if (ballTrueX > paddleTrueX + paddle.getWidth()/4) {
+			ball.dx += 20;
+		} else if (ballTrueX > paddleTrueX + paddle.getWidth()/8) {
+			ball.dx += 10;
+		}
+		if (ball.dx < -30) {
+			ball.dx = -30;
+		} if (ball.dx > 30) {
+			ball.dx = 30;
+		}
+	}
 	ball.setX(ball.getX()+ball.dx);
 	ball.setY(ball.getY()+ball.dy);
 }
@@ -93,6 +237,34 @@ function move() {
 	}
 	if (right && paddle.getX() + paddle.getWidth() + paddle.getStrokeWidth() <= stage.getWidth()) {
 		paddle.setX(paddle.getX()+paddleSpeed);
+	}
+	if (gun) {
+		if (spacePressed) {
+			spacePressed = false;
+			if (!shot) {
+				bullet = new Kinetic.Rect({
+					width: 5,
+					height: 20,
+					fill: '00FF22',
+					stroke: 'b7faf0',
+					strokeWidth: 2,
+					x: paddle.getX() + paddle.getWidth()/2,
+					y: paddle.getY()
+				});
+				powerlayer.add(bullet);
+				shot = true;
+			}
+		}
+	}
+	if (!isSpawned) {
+		ball.setX(paddle.getX() + paddle.getWidth()/2 - ball.getWidth()/2);
+		ball.setY(stage.getHeight() - 50);
+		if (spacePressed) {
+			isSpawned  = true;
+			ball.dx = speed;
+			ball.dy = -speed;
+			spacePressed = false;
+		}
 	}
 }
 
@@ -113,6 +285,10 @@ function keyDown(key) {
 		case 40:
 			console.log("down");
 			down = true;
+			break;
+		case 32:
+			console.log("space");
+			spacePressed = true;
 			break;
 	}
 }
@@ -196,7 +372,7 @@ function hitTesting() {
 				level[xi][yi].remove();
 				level[xi][yi].deleted = true;
 				layer.draw();
-				ball.dy *= -1;
+				if (!fireball) ball.dy *= -1;
 			}
 		}
 	}
@@ -380,5 +556,5 @@ function setUpImage() {
 	};
 	
 	// Load an image to convert.
-	image.src = "test.bmp";
+	image.src = "Mona_Lisa.jpg";
 }
