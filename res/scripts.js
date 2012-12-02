@@ -199,6 +199,7 @@ function hitTesting() {
 }
 
 function updateImage(fill, value) {
+	console.log(originalHisto);
 	updateHisto(fill, value);
 	var P1 = [];
 	var P2 = [];
@@ -284,9 +285,11 @@ function updateImage(fill, value) {
 }
 
 function updateHisto(fill, value) {
+	console.log(modHisto[8]);
 	for (i = fill; i < fill+8; i++) {
 		modHisto[i] -= value;
 		if (modHisto[i] < 0) modHisto[i] = 0;
+		console.log(modHisto[i]);
 	}
 }
 
@@ -306,6 +309,7 @@ function CDF(P, histo) {
 	for(var i = 0;i < k;i++) {
 		c += histo[i];
 		P[i] = c/n;
+		console.log(P[i]);
 	}
 	return P;
 }
@@ -380,8 +384,8 @@ function setUpImage() {
 				var grayScale = (red * 0.3) + (green * 0.59) + (blue * .11);
 				if (grayScale < 0) grayScale = 0;
 				if (grayScale > 255) grayScale = 255;
-				var modulus = grayScale%8;
-				grayScale -= modulus;
+				//var modulus = grayScale%8;
+				//grayScale -= modulus;
 				originalHisto[grayScale]++;
 				modHisto[grayScale]++;
 				
@@ -391,6 +395,9 @@ function setUpImage() {
 				pixelData[startIdx + 2] = grayScale;
 			}
 		}
+		
+		console.log(originalHisto);
+		console.log(modHisto);
 		
 		ctx.putImageData(imageData,0,0);
 		setupLevel();
