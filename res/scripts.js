@@ -14,10 +14,12 @@ var paddle;
 var ball;
 var bgimg;
 var bglayer;
+var actlayer;
+var level;
 
 
 window.onload = function() {
-	
+	actlayer = new Kinetic.Layer({});
 	bglayer = new Kinetic.Layer({});
 	layer = new Kinetic.Layer({});
         stage = new Kinetic.Stage({
@@ -27,6 +29,7 @@ window.onload = function() {
         });
 	stage.add(bglayer);
 	stage.add(layer);
+	stage.add(actlayer);
 	ball = new Kinetic.Circle({
 		x: stage.getWidth() / 2,
 		y: stage.getHeight() / 2,
@@ -44,9 +47,8 @@ window.onload = function() {
 		stroke: 'black',
 		strokeWidth: 4
 	});
-	layer.add(ball);
-	layer.add(paddle);
-	stage.draw();
+	actlayer.add(ball);
+	actlayer.add(paddle);
 	$("body").keydown(function(key) {
 		keyDown(key);
 	});
@@ -56,24 +58,15 @@ window.onload = function() {
 	setupLevel();
 	window.setInterval(function() {redraw()}, 30);
 	imageHandling();
+	stage.draw();
 }
 
 function redraw() {
-	var objects = layer.getIntersections(ball.getX(), ball.getY());
-	var isHittingPaddle;
-	for (var i in objects) {
-		if (objects[i] == ball || objects[i] == bgimg) {
-		} else if (objects[i] == paddle) {
-			isHittingPaddle = true;
-		} else {
-			objects[i].remove();
-			ball.dx, ball.dy *= -1;
-		}
-	}
+	var isHittingPaddle = hitTesting();
 	moveBall(isHittingPaddle);
 	move();
 	//imageHandling();
-	layer.draw();
+	actlayer.draw();
 }
 
 function moveBall(rebound) {
@@ -134,24 +127,68 @@ function keyUp(key) {
 			break;
 	}
 }
+
 function setupLevel() {
 	var iterator = 0;
+	level = [];
 	for (var i = 0; i < 32; i++) {
-		var newRect = new Kinetic.Rect({
-			x: iterator,
-			y: 0,
-			height:20,
-			width:30,
-			fill: 'rgb(' + 8*i + ',' + 8*i + ',' + 8*i + ')',
-			stroke: 'red',
-			strokeWidth: 5
-		});
-		layer.add(newRect);
+		level[i] = [];
+		var yiterator = 0;
+		for (var j = 0; j < 10; j++) {
+			var newRect = new Kinetic.Rect({
+				x: iterator,
+				y: yiterator,
+				height:20,
+				width:30,
+				fill: 'rgb(' + 8*i + ',' + 8*i + ',' + 8*i + ')',
+				stroke: 'red',
+				strokeWidth: 5
+			});
+			level[i][j] = newRect;
+			layer.add(newRect);
+			yiterator += 20;
+		}
 		iterator += 30;
 	}
 }
-function handleCollisions() {
+function hitTesting() {
+	//var objects = layer.getIntersections(ball.getX(), ball.getY());
+	//var isHittingPaddle;
+	//for (var i in objects) {
+	//	if (objects[i] == ball || objects[i] == bgimg) {
+	//	} else if (objects[i] == paddle) {
+	//		isHittingPaddle = true;
+	//	} else {
+	//		objects[i].remove();
+	//		ball.dx, ball.dy *= -1;
+	//	}
+	//}
+	//return isHittingPaddle;
 	
+	var x = ball.getX();
+	var y = ball.getY();
+	var index = 0;
+	for (var i = 0; i < 32; i++) {
+		var j = i*30;
+		if (x > j && x < j+30) {
+			index = i;
+			i = 32;
+		}
+	}
+	for (var i = 0; i < level[index].length; i++) {
+		var j = i*20;
+		if (y > j && y < j+20) {
+			level[index][j].remove();
+		}
+	}
+	
+	objects = actlayer.getIntersections(ball.getX(), ball.getY());
+	var paddled;
+	if (objects.length > 1)
+		paddled = true;
+	else
+		paddled = false;
+	return paddled;
 }
 
 function imageHandling() {
