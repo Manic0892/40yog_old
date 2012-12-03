@@ -36,7 +36,6 @@ var fireball = false;
 
 /*
  *TODO:
- *powerups
  *title screen
  *uploading?
  *access control?
@@ -103,7 +102,7 @@ function redraw() {
 }
 
 function powerups() {
-	if (Math.floor(Math.random()*200) == Math.floor(Math.random()*100)) {
+	if (Math.floor(Math.random()*1000) == Math.floor(Math.random()*100)) {
 		var type = Math.floor(Math.random()*3);
 		var fill;
 		var stroke;
@@ -322,47 +321,6 @@ function keyUp(key) {
 	}
 }
 
-function setupLevel() {
-	var iterator = 0;
-	level = [];
-	for (var i = 0; i < 32; i++) {
-		level[i] = [];
-		var yiterator = 0;
-		var peak = 0;
-		for (var j = 8*i; j < 8*(i+1); j++) {
-			if (peak < originalHisto[j]) peak = originalHisto[j];
-		}
-		var divisor = 1;
-		while (peak/divisor > 20) {
-			divisor *= 5;
-		}
-		peak /= divisor;
-		for (var j = 0; j < peak; j++) {
-			var newRect = new Kinetic.Rect({
-				x: iterator,
-				y: yiterator,
-				height:20,
-				width:30,
-				fill: 'rgb(' + (256-8*i) + ',' + (256-8*i) + ',' + (256-8*i) + ')',
-				stroke: 'red',
-				strokeWidth: 5,
-			});
-			newRect.value = divisor;
-			newRect.xindex = i;
-			newRect.on('click', function() {
-				ball.setX(this.getX());
-				ball.setY(this.getY());
-			});
-			level[i][j] = newRect;
-			level[i][j].deleted = false;
-			layer.add(newRect);
-			yiterator += 20;
-		}
-		iterator += 30;
-	}
-	layer.draw();
-	window.setInterval(function() {redraw()}, 30);
-}
 function hitTesting() {
 	var x = ball.getX();
 	var y = ball.getY();
@@ -563,10 +521,71 @@ function setUpImage() {
 		//bglayer.draw();
 	};
 	
-	// Load an image to convert.
-	image.src = "Mona_Lisa.jpg";
+	var custom = getUrlVars()["custom"];
+	if (custom == '0') custom = false;
+	else custom = true;
+	if (!custom) {
+		// To get the second parameter
+		var source = getUrlVars()["source"];
+		image.src = source;
+	}
+	
+}
+
+function setupLevel() {
+	var iterator = 0;
+	level = [];
+	for (var i = 0; i < 32; i++) {
+		level[i] = [];
+		var yiterator = 0;
+		var peak = 0;
+		for (var j = 8*i; j < 8*(i+1); j++) {
+			if (peak < originalHisto[j]) peak = originalHisto[j];
+		}
+		var divisor = 1;
+		while (peak/divisor > 20) {
+			divisor *= 5;
+		}
+		peak /= divisor;
+		for (var j = 0; j < peak; j++) {
+			var newRect = new Kinetic.Rect({
+				x: iterator,
+				y: yiterator,
+				height:20,
+				width:30,
+				fill: 'rgb(' + (256-8*i) + ',' + (256-8*i) + ',' + (256-8*i) + ')',
+				stroke: 'red',
+				strokeWidth: 5,
+			});
+			newRect.value = divisor;
+			newRect.xindex = i;
+			newRect.on('click', function() {
+				ball.setX(this.getX());
+				ball.setY(this.getY());
+			});
+			level[i][j] = newRect;
+			level[i][j].deleted = false;
+			layer.add(newRect);
+			yiterator += 20;
+		}
+		iterator += 30;
+	}
+	layer.draw();
+	window.setInterval(function() {redraw()}, 30);
 }
 
 function updateStatus() {
 	$('#status').text('Lives: ' + lives);
+}
+
+function getUrlVars()
+{
+	var vars = [], hash;
+	var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+	for(var i = 0; i < hashes.length; i++) {
+		hash = hashes[i].split('=');
+		vars.push(hash[0]);
+		vars[hash[0]] = hash[1];
+	}
+	return vars;
 }
