@@ -102,7 +102,7 @@ function redraw() {
 }
 
 function powerups() {
-	if (Math.floor(Math.random()*1000) == Math.floor(Math.random()*100)) {
+	if (Math.floor(Math.random()*100) == Math.floor(Math.random()*100)) {
 		var type = Math.floor(Math.random()*3);
 		var fill;
 		var stroke;
@@ -211,9 +211,9 @@ function moveBullet() {
 function moveBall(rebound) {
 	if (ball.getY() <= 0) ball.dx, ball.dy *= -1;
 	if (ball.getY() > stage.getHeight() + 100){
-		lives--;
+		if (lives > 0) lives--;
 		updateStatus();
-		isSpawned = false;//death
+		if (lives > 0) isSpawned = false;//death
 	}
 	if (ball.getX() <= 0 || ball.getX() >= stage.getWidth()) ball.dx *= -1;
 	if (rebound) {
