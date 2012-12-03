@@ -102,7 +102,7 @@ function redraw() {
 }
 
 function powerups() {
-	if (Math.floor(Math.random()*500) == 250) {
+	if (Math.floor(Math.random()*501) == 250) {
 		var type = Math.floor(Math.random()*3);
 		var fill;
 		var stroke;
