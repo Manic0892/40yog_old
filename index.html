@@ -1,8 +1,20 @@
 <html>
 	<head>
+		<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'></script>
+		<script type="text/javascript">
+			function loadCustomURL() {
+				var customURL = $('#customurl').val();
+				window.location.href = "./game.html?custom=1&source="+customURL;
+			}
+		</script>
+		<link rel='stylesheet' type='text/css' href='./res/styles.css' />
 	</head>
 	<body>
-		<a href="./game.html?custom=0&source=Mona_Lisa.jpg">Mona Lisa</a>
-		<a href="./game.html?custom=0&source=https://www.google.com/images/srpr/logo3w.png">Google</a>
+		<div id="mainWrapper">
+			<a href="./game.html?custom=0&source=img/Mona_Lisa.jpg">Mona Lisa</a><br />
+			<a href="./game.html?custom=0&source=img/test.bmp">Test.bmp</a><br />
+			<input type="text" id="customurl">
+			<button type="button" onclick="loadCustomURL();">Custom URL</button>
+		</div>
 	</body>
 </html>

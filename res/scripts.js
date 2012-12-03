@@ -524,12 +524,15 @@ function setUpImage() {
 	var custom = getUrlVars()["custom"];
 	if (custom == '0') custom = false;
 	else custom = true;
+	var source = getUrlVars()["source"];
+	var type = source.split('.');
+	type = type.pop();
 	if (!custom) {
 		// To get the second parameter
-		var source = getUrlVars()["source"];
 		image.src = source;
+	} else {
+		image.src = ('/res/download.php?source='+source);
 	}
-	
 }
 
 function setupLevel() {
