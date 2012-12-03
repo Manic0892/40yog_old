@@ -52,4 +52,16 @@ canvas {
 .subtitleText {
 	font-size: 25;
 	font-family:theFontBold;
+	padding:10px;
+}
+
+.special {
+	font-size:20;
+}
+
+.section {
+	border: 5px solid C9C9C9;
+	width:500px;
+	margin-left:auto;
+	margin-right:auto;
 }
