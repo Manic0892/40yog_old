@@ -1,35 +1,19 @@
 <html>
 	<head>
+		<script src='./res/scripts.js' type='text/javascript'></script>
+		<script src='./libs/kinetic-v4.1.2.min.js'></script>
 		<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'></script>
-		<script type="text/javascript">
-			function loadCustomURL() {
-				var customURL = $('#customurl').val();
-				window.location.href = "./game.html?custom=1&source="+customURL;
-			}
-		</script>
+		<!--<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>-->
+		<!--<script src='./libs/crafty.js'></script>-->
+		<!--<script src='./libs/pixastic.core.js'></script>-->
 		<link rel='stylesheet' type='text/css' href='./res/styles.css' />
 	</head>
 	<body>
-		<div id="mainWrapper">
-			<span class="titleText">HistoBreaker</span>
-			<div class="section">
-				<span class="subtitleText">Play Now</span><br />
-				<a class = "special" href="./game.html?custom=0&source=img/test.bmp">Test.bmp</a><br />
-				<a class = "special" href="./game.html?custom=1&source=http://www.google.com/images/srpr/logo3w.png">Google Logo</a><br />
-				<input type="text" id="customurl">
-				<button type="button" onclick="loadCustomURL();">Custom URL</button>
-			</div>
-			<span class="subtitleText">Introduction</span><br />
-			<p>Thanks for checking out HistoBreaker!</p>
-			<p>The concept of this game is that a Breakout level is constructed from the <a href="http://en.wikipedia.org/wiki/Image_histogram">histogram of an input image</a>.  Every block you destroy modifies the original image's histogram, and that change is applied to the image.  The game is made in HTML5.  I chose HTML5 to investigate if it was an appropriate replacement for Flash, and also to discover how image processing could be applied using Javascript.</p>
-			<p>To start playing right away, click on any of the "Play Now" links to load up the appropriate image, or paste the URL to a different image in the text box and click the "Custom URL" button.  If you want to learn more about the project, check out the "Further Reading" section."</p>
-			<span class="subtitleText">Requirements</span><br />
-			<p>The most important requirement of HistoBreaker is an HTML5-compatible standards-compliant browser.  I recommend <a href="http://google.com/chrome">Google Chrome</a>, as this is what the game has been tested in most extensively.  However, <a href="http://www.mozilla.org/en-US/firefox/new/">Firefox</a> and <a href="http://www.apple.com/safari/">Safari</a> should also work.</p>
-			<p>It is also strongly recommended that you use a computer and a browser with a resolution of at least 1000x1000.  The game will still display on lower resolutions, but you'll be forced to scroll the page in order to see what you're doing.</p>
-			<span class="subtitleText">Further Reading</span><br />
-			<a href="./howto.html">How to Play</a><br />
-			<a href="./development.html">Development Notes</a><br />
-			<a href="https://github.com/Manic0892/html10">Source Code</a>
+		<div id='fullWrapper'>
+			<div id='status'></div>
+			<div id='gameWrapper'></div>
+			<!--<div id='buttonholder'><button onclick='startGame();'>Start the game.</button></div>-->
+			<div style="text-align:center;"><a href="index.html" class = "special">Homepage</a></div>
 		</div>
 	</body>
 </html>
