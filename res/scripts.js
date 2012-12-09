@@ -7,7 +7,8 @@ var canvas;
 var context;
 var bullets;
 
-var particles = new particleHolder();
+var gravity = 0.2;
+
 
 window.onload = function() {
 	startGame();
@@ -23,6 +24,7 @@ function firstState() {
 		canvas = $('#gamePlay')[0];
 		
 		bullets = new jaws.SpriteList();
+		particles = new jaws.SpriteList();
 		context = canvas.getContext('2d');
 		
 		player = new jaws.Sprite({image: 'res/plane.png', x: 0, y:0, context: context});
@@ -38,17 +40,18 @@ function firstState() {
 		if(jaws.pressed('space')) {
 			//bullets.push(new Bullet(player.rect().right, player.y+13));
 			for (var i = 0; i < 7; i++)
-				particles.p.push(new Particle(player.x, player.y, Math.floor(Math.random()*6), Math.floor(Math.random()*6)));
+				particles.push(new Particle(player.x, player.y, (Math.floor(Math.random()*20)-10)/5, Math.floor(Math.random()*-6)));
 		}
-		forceInsideCanvas(player);
+		forceInsideCanvas(player); 
 		bullets.removeIf(isOutsideCanvas);
+		particles.removeIf(isOutsideCanvas);
 	}
 	
 	this.draw = function() {
 		jaws.clear();        // Same as: context.clearRect(0,0,jaws.width,jaws.height)
 		player.draw();
-		particles.draw();
 		bullets.draw();  // will call draw() on all items in the list
+		particles.draw();
 	}
 }
 
@@ -82,7 +85,7 @@ function Particle(x,y,xdir, ydir) {
 	this.y = y;
 	this.xdir = xdir;
 	this.ydir = ydir;
-	this.draw = function(gravity) {
+	this.draw = function() {
 		this.ydir += gravity;
 		this.y += this.ydir;
 		if (this.xdir > 0) this.xdir -= 1;
@@ -90,15 +93,5 @@ function Particle(x,y,xdir, ydir) {
 		context.beginPath();
 		context.arc(this.x, this.y, 2, 0, Math.PI*2, true); 
 		context.stroke();
-	}
-}
-
-function particleHolder() {
-	this.p = [];
-	this.gravity = 1;
-	this.draw = function() {
-		for (i in this.p) {
-			this.p[i].draw(this.gravity);
-		}
 	}
 }
