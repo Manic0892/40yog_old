@@ -11,11 +11,13 @@ var gravity = 0.2;
 
 
 window.onload = function() {
+	jaws.assets.add('res/plane.png');
+	jaws.assets.add('res/bullet.png');
 	startGame();
 }
 
 function startGame() {
-	gameState = new firstState();
+	gameState = new menuState();
 	jaws.start(gameState);
 }
 
@@ -38,20 +40,45 @@ function firstState() {
 		if(jaws.pressed('up')) player.y -= 10;
 		if(jaws.pressed('down')) player.y += 10;
 		if(jaws.pressed('space')) {
-			//bullets.push(new Bullet(player.rect().right, player.y+13));
-			for (var i = 0; i < 7; i++)
-				particles.push(new Particle(player.x, player.y, (Math.floor(Math.random()*20)-10)/5, (Math.floor(Math.random()*-10+5))/.7));
+			bullets.push(new Bullet(player.rect().right, player.y+13));
+			//for (var i = 0; i < 7; i++)
+			//	particles.push(new Particle(player.x, player.y, (Math.floor(Math.random()*20)-10)/5, (Math.floor(Math.random()*-10+5))/.7));
 		}
 		forceInsideCanvas(player); 
 		bullets.removeIf(isOutsideCanvas);
-		particles.removeIf(isOutsideCanvas);
+		//particles.removeIf(isOutsideCanvas);
 	}
 	
 	this.draw = function() {
 		jaws.clear();        // Same as: context.clearRect(0,0,jaws.width,jaws.height)
 		player.draw();
 		bullets.draw();  // will call draw() on all items in the list
-		particles.draw();
+		//particles.draw();
+	}
+}
+
+function menuState() {
+	var index = 0;
+	var items = ["Start", "Settings", "Highscore"];
+	
+	this.setup = function() {
+		index = 0;
+		jaws.on_keydown(["down","s"],       function()  { index++; if(index >= items.length) {index=items.length-1} } );
+		jaws.on_keydown(["up","w"],         function()  { index--; if(index < 0) {index=0} } );
+		gameState = new firstState();
+		jaws.on_keydown(["enter","space"],  function()  { if(items[index]=="Start") {jaws.switchGameState(gameState) } } );
+	}
+	
+	this.draw = function() {
+		jaws.context.clearRect(0,0,jaws.width,jaws.height);
+		for(var i=0; items[i]; i++) {
+			// jaws.context.translate(0.5, 0.5)
+			jaws.context.font = "bold 50pt terminal";
+			jaws.context.lineWidth = 10;
+			jaws.context.fillStyle =  (i == index) ? "Red" : "Black";
+			jaws.context.strokeStyle =  "rgba(200,200,200,0.0)";
+			jaws.context.fillText(items[i], 30, 100 + i * 60);
+		}
 	}
 }
 
@@ -73,10 +100,8 @@ function Bullet(x, y) {
 	this.x = x;
 	this.y = y;
 	this.draw = function() {
-		this.x += 4;
-		context.beginPath();
-		context.arc(this.x, this.y, 4, 0, Math.PI*2, true); 
-		context.stroke();
+		this.x += 20;
+		jaws.context.drawImage(jaws.assets.get("res/bullet.png"), this.x, this.y)
 	}
 }
 
