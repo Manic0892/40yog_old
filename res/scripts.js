@@ -7,6 +7,8 @@ var canvas;
 var context;
 var bullets;
 
+var speed = 5;
+var bulletSpeed = 13;
 var gravity = 0.2;
 
 
@@ -21,7 +23,7 @@ function startGame() {
 	jaws.start(gameState);
 }
 
-function firstState() {
+function playState() {
 	this.setup = function () {
 		canvas = $('#gamePlay')[0];
 		
@@ -30,17 +32,22 @@ function firstState() {
 		context = canvas.getContext('2d');
 		
 		player = new jaws.Sprite({image: 'res/plane.png', x: 0, y:0, context: context});
+		player.canFire = true;
 		jaws.on_keydown('esc', gameState.setup);
 		jaws.preventDefaultKeys(['up', 'down', 'left', 'right', 'space']);
 	}
 	
 	this.update = function() {
-		if(jaws.pressed('left')) player.x -= 10;
-		if(jaws.pressed('right')) player.x += 10;
-		if(jaws.pressed('up')) player.y -= 10;
-		if(jaws.pressed('down')) player.y += 10;
+		if(jaws.pressed('left')) player.x -= speed;
+		if(jaws.pressed('right')) player.x += speed;
+		if(jaws.pressed('up')) player.y -= speed;
+		if(jaws.pressed('down')) player.y += speed;
 		if(jaws.pressed('space')) {
-			bullets.push(new Bullet(player.rect().right, player.y+13));
+			if (player.canFire) {
+				bullets.push(new Bullet(player.rect().right, player.y+13));
+				player.canFire = false;
+				window.setTimeout(function() {player.canFire = true;}, 400);
+			}
 			//for (var i = 0; i < 7; i++)
 			//	particles.push(new Particle(player.x, player.y, (Math.floor(Math.random()*20)-10)/5, (Math.floor(Math.random()*-10+5))/.7));
 		}
@@ -65,7 +72,7 @@ function menuState() {
 		index = 0;
 		jaws.on_keydown(["down","s"],       function()  { index++; if(index >= items.length) {index=items.length-1} } );
 		jaws.on_keydown(["up","w"],         function()  { index--; if(index < 0) {index=0} } );
-		gameState = new firstState();
+		gameState = new playState();
 		jaws.on_keydown(["enter","space"],  function()  { if(items[index]=="Start") {jaws.switchGameState(gameState) } } );
 	}
 	
@@ -100,7 +107,7 @@ function Bullet(x, y) {
 	this.x = x;
 	this.y = y;
 	this.draw = function() {
-		this.x += 20;
+		this.x += bulletSpeed;
 		jaws.context.drawImage(jaws.assets.get("res/bullet.png"), this.x, this.y)
 	}
 }
