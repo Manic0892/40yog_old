@@ -8,7 +8,7 @@ var context;
 var bullets;
 
 var speed = 5;
-var bulletSpeed = 13;
+var bulletSpeed = 7;
 var gravity = 0.2;
 
 
@@ -33,7 +33,7 @@ function playState() {
 		
 		player = new jaws.Sprite({image: 'res/plane.png', x: 0, y:0, context: context});
 		player.canFire = true;
-		jaws.on_keydown('esc', gameState.setup);
+		jaws.on_keydown('esc', function() {jaws.switchGameState(menuState)});
 		jaws.preventDefaultKeys(['up', 'down', 'left', 'right', 'space']);
 	}
 	
@@ -46,7 +46,7 @@ function playState() {
 			if (player.canFire) {
 				bullets.push(new Bullet(player.rect().right, player.y+13));
 				player.canFire = false;
-				window.setTimeout(function() {player.canFire = true;}, 400);
+				window.setTimeout(function() {player.canFire = true;}, 600);
 			}
 			//for (var i = 0; i < 7; i++)
 			//	particles.push(new Particle(player.x, player.y, (Math.floor(Math.random()*20)-10)/5, (Math.floor(Math.random()*-10+5))/.7));
@@ -72,20 +72,26 @@ function menuState() {
 		index = 0;
 		jaws.on_keydown(["down","s"],       function()  { index++; if(index >= items.length) {index=items.length-1} } );
 		jaws.on_keydown(["up","w"],         function()  { index--; if(index < 0) {index=0} } );
-		gameState = new playState();
-		jaws.on_keydown(["enter","space"],  function()  { if(items[index]=="Start") {jaws.switchGameState(gameState) } } );
+		jaws.on_keydown(["enter","space"],  function()  { if(items[index]=="Start") {jaws.switchGameState(playState) } } );
 	}
 	
 	this.draw = function() {
-		jaws.context.clearRect(0,0,jaws.width,jaws.height);
+		jaws.clear();
 		for(var i=0; items[i]; i++) {
 			// jaws.context.translate(0.5, 0.5)
-			jaws.context.font = "bold 50pt impact";
-			jaws.context.lineWidth = 10;
-			jaws.context.fillStyle =  (i == index) ? "Red" : "Black";
-			jaws.context.strokeStyle =  "rgba(200,200,200,0.0)";
-			jaws.context.fillText(items[i], 30, 100 + i * 60);
+			if (i != index) {
+				jaws.context.font = "bold 100pt impact";
+				jaws.context.lineWidth = 10;
+				jaws.context.fillStyle =  (i == index) ? "Red" : "Black";
+				jaws.context.strokeStyle =  "rgba(200,200,200,0.0)";
+				jaws.context.fillText(items[i], 30, 120 + i * 80);
+			}
 		}
+		jaws.context.font = "bold 100pt impact";
+		jaws.context.lineWidth = 10;
+		jaws.context.fillStyle = "Red";
+		jaws.context.strokeStyle =  "rgba(200,200,200,0.0)";
+		jaws.context.fillText(items[index], 30, 120+index*80);
 	}
 }
 
