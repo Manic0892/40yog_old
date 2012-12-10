@@ -73,7 +73,7 @@ function menuState() {
 		jaws.context.clearRect(0,0,jaws.width,jaws.height);
 		for(var i=0; items[i]; i++) {
 			// jaws.context.translate(0.5, 0.5)
-			jaws.context.font = "bold 50pt terminal";
+			jaws.context.font = "bold 50pt impact";
 			jaws.context.lineWidth = 10;
 			jaws.context.fillStyle =  (i == index) ? "Red" : "Black";
 			jaws.context.strokeStyle =  "rgba(200,200,200,0.0)";
