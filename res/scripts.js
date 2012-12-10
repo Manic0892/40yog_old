@@ -40,7 +40,7 @@ function firstState() {
 		if(jaws.pressed('space')) {
 			//bullets.push(new Bullet(player.rect().right, player.y+13));
 			for (var i = 0; i < 7; i++)
-				particles.push(new Particle(player.x, player.y, (Math.floor(Math.random()*20)-10)/5, Math.floor(Math.random()*-6)));
+				particles.push(new Particle(player.x, player.y, (Math.floor(Math.random()*20)-10)/5, (Math.floor(Math.random()*-10+5))/.7));
 		}
 		forceInsideCanvas(player); 
 		bullets.removeIf(isOutsideCanvas);
