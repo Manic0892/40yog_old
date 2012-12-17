@@ -8,13 +8,14 @@ var context;
 var bullets;
 
 var speed = 5;
-var bulletSpeed = 7;
+var bulletSpeed = 13;
 var gravity = 0.2;
 
 
 window.onload = function() {
 	jaws.assets.add('res/plane.png');
 	jaws.assets.add('res/bullet.png');
+	jaws.assets.add('res/droid.png');
 	startGame();
 }
 
@@ -31,26 +32,60 @@ function playState() {
 		particles = new jaws.SpriteList();
 		context = canvas.getContext('2d');
 		
-		player = new jaws.Sprite({image: 'res/plane.png', x: 0, y:0, context: context});
+		var anim = new jaws.Animation({sprite_sheet: "res/droid.png", frame_size: [11,15], frame_duration: 100});
+		
+		player = new jaws.Sprite({x:100, y:300, scale: 4});
+		
+		player.anim_default = anim.slice(0,5);
+		player.anim_up = anim.slice(6,8);
+		player.anim_down = anim.slice(8,10);
+		player.anim_left = anim.slice(10,12);
+		player.anim_right = anim.slice(12,14);
+	      
+		player.setImage(player.anim_default.next());
+		
+		jaws.context.mozImageSmoothingEnabled = false;
+		
+		
 		player.canFire = true;
 		jaws.on_keydown('esc', function() {jaws.switchGameState(menuState)});
 		jaws.preventDefaultKeys(['up', 'down', 'left', 'right', 'space']);
 	}
 	
 	this.update = function() {
-		if(jaws.pressed('left')) player.x -= speed;
-		if(jaws.pressed('right')) player.x += speed;
-		if(jaws.pressed('up')) player.y -= speed;
-		if(jaws.pressed('down')) player.y += speed;
-		if(jaws.pressed('space')) {
+		if (jaws.pressed('left_mouse_button')) {
 			if (player.canFire) {
-				bullets.push(new Bullet(player.rect().right, player.y+13));
+				bullets.push(new Bullet(player.x, player.y, jaws.mouse_x, jaws.mouse_y));
 				player.canFire = false;
 				window.setTimeout(function() {player.canFire = true;}, 600);
 			}
-			//for (var i = 0; i < 7; i++)
-			//	particles.push(new Particle(player.x, player.y, (Math.floor(Math.random()*20)-10)/5, (Math.floor(Math.random()*-10+5))/.7));
 		}
+		player.setImage(player.anim_default.next());
+		if(jaws.pressed('left')) {
+			player.setImage(player.anim_left.next());
+			player.x -= speed;
+		}
+		if(jaws.pressed('right')) {
+			player.setImage(player.anim_right.next());
+			player.x += speed;
+		}
+		if(jaws.pressed('up')) {
+			player.setImage(player.anim_up.next());
+			player.y -= speed;
+		}
+		if(jaws.pressed('down')) {
+			player.setImage(player.anim_down.next());
+			player.y += speed;
+		}
+		//if(jaws.pressed('space')) {
+		//	if (player.canFire) {
+		//		bullets.push(new Bullet(player.rect().right, player.y+13));
+		//		player.canFire = false;
+		//		window.setTimeout(function() {player.canFire = true;}, 600);
+		//	}
+		//	//for (var i = 0; i < 7; i++)
+		//	//	particles.push(new Particle(player.x, player.y, (Math.floor(Math.random()*20)-10)/5, (Math.floor(Math.random()*-10+5))/.7));
+		//}
 		forceInsideCanvas(player); 
 		bullets.removeIf(isOutsideCanvas);
 		//particles.removeIf(isOutsideCanvas);
@@ -66,12 +101,12 @@ function playState() {
 
 function menuState() {
 	var index = 0;
-	var items = ["Start", "Settings", "Highscore"];
+	var items = ["Start", "Settings", "High Score"];
 	
 	this.setup = function() {
 		index = 0;
-		jaws.on_keydown(["down","s"],       function()  { index++; if(index >= items.length) {index=items.length-1} } );
-		jaws.on_keydown(["up","w"],         function()  { index--; if(index < 0) {index=0} } );
+		jaws.on_keydown(["down","s"],       function()  { index++; if(index >= items.length) {index=0} } );
+		jaws.on_keydown(["up","w"],         function()  { index--; if(index < 0) {index=items.length-1} } );
 		jaws.on_keydown(["enter","space"],  function()  { if(items[index]=="Start") {jaws.switchGameState(playState) } } );
 	}
 	
@@ -109,11 +144,22 @@ function forceInsideCanvas(item) {
 //objects
 
 /* Our simple bullet class, basically a circle with a position (x/y) */
-function Bullet(x, y) {
+function Bullet(x, y, mousex, mousey) {
+	this.dx = mousex - x;
+	this.dy  = mousey - y;
+	this.dx /= 10;
+	this.dy /= 10;
+	var vectorLength = Math.sqrt(this.dx*this.dx + this.dy * this.dy);
+	this.dx /= vectorLength;
+	this.dy /= vectorLength;
+	this.dx *= bulletSpeed;
+	this.dy *= bulletSpeed;
 	this.x = x;
 	this.y = y;
 	this.draw = function() {
-		this.x += bulletSpeed;
+		console.log(this.dx, this.dy);
+		this.x += this.dx;
+		this.y += this.dy;
 		jaws.context.drawImage(jaws.assets.get("res/bullet.png"), this.x, this.y)
 	}
 }
