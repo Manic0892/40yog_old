@@ -8,7 +8,7 @@ var context;
 var bullets;
 
 var speed = 5;
-var bulletSpeed = 10;
+var bulletSpeed = 2;
 var gravity = 0.2;
 var arm;
 
@@ -48,7 +48,7 @@ function playState() {
 		
 		jaws.context.mozImageSmoothingEnabled = false;
 		
-		arm = new jaws.Sprite({image: 'res/droidarm.png', x:player.x+player.width/2, y:player.y+player.height/2, scale:4});
+		arm = new jaws.Sprite({image: 'res/droidarm.png', x:player.x+player.width/2, y:player.y+player.height/2, scale:4, anchor:'left_center'});
 		
 		
 		player.canFire = true;
@@ -59,7 +59,7 @@ function playState() {
 	this.update = function() {
 		if (jaws.pressed('left_mouse_button')) {
 			if (player.canFire) {
-				bullets.push(new Bullet(player.x+player.width/2, player.y+player.height/4, jaws.mouse_x, jaws.mouse_y));
+				bullets.push(new Bullet(arm.x, arm.y-arm.height/2, jaws.mouse_x, jaws.mouse_y));
 				player.canFire = false;
 				window.setTimeout(function() {player.canFire = true;}, 600);
 			}
@@ -86,7 +86,7 @@ function playState() {
 		var angle = Math.atan2(jaws.mouse_y - arm.y, jaws.mouse_x - arm.x);
 		//var angle = calcAngle({x:arm.x, y:arm.y},{x:jaws.mouse_x, y:jaws.mouse_y});
 		arm.rotateTo(angle*60);
-		console.log(angle*60);
+		//console.log(angle*60);
 		//if(jaws.pressed('space')) {
 		//	if (player.canFire) {
 		//		bullets.push(new Bullet(player.rect().right, player.y+13));
