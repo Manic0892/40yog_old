@@ -8,14 +8,16 @@ var context;
 var bullets;
 
 var speed = 5;
-var bulletSpeed = 13;
+var bulletSpeed = 10;
 var gravity = 0.2;
+var arm;
 
 
 window.onload = function() {
 	jaws.assets.add('res/plane.png');
 	jaws.assets.add('res/bullet.png');
 	jaws.assets.add('res/droid.png');
+	jaws.assets.add('res/droidarm.png');
 	startGame();
 }
 
@@ -46,6 +48,8 @@ function playState() {
 		
 		jaws.context.mozImageSmoothingEnabled = false;
 		
+		arm = new jaws.Sprite({image: 'res/droidarm.png', x:player.x+player.width/2, y:player.y+player.height/2, scale:4});
+		
 		
 		player.canFire = true;
 		jaws.on_keydown('esc', function() {jaws.switchGameState(menuState)});
@@ -55,7 +59,7 @@ function playState() {
 	this.update = function() {
 		if (jaws.pressed('left_mouse_button')) {
 			if (player.canFire) {
-				bullets.push(new Bullet(player.x, player.y, jaws.mouse_x, jaws.mouse_y));
+				bullets.push(new Bullet(player.x+player.width/2, player.y+player.height/4, jaws.mouse_x, jaws.mouse_y));
 				player.canFire = false;
 				window.setTimeout(function() {player.canFire = true;}, 600);
 			}
@@ -77,6 +81,12 @@ function playState() {
 			player.setImage(player.anim_down.next());
 			player.y += speed;
 		}
+		arm.x = player.x+player.width/2;
+		arm.y = player.y+player.height/4;
+		var angle = Math.atan2(jaws.mouse_y - arm.y, jaws.mouse_x - arm.x);
+		//var angle = calcAngle({x:arm.x, y:arm.y},{x:jaws.mouse_x, y:jaws.mouse_y});
+		arm.rotateTo(angle*60);
+		console.log(angle*60);
 		//if(jaws.pressed('space')) {
 		//	if (player.canFire) {
 		//		bullets.push(new Bullet(player.rect().right, player.y+13));
@@ -95,6 +105,7 @@ function playState() {
 		jaws.clear();        // Same as: context.clearRect(0,0,jaws.width,jaws.height)
 		player.draw();
 		bullets.draw();  // will call draw() on all items in the list
+		arm.draw();
 		//particles.draw();
 	}
 }
@@ -157,25 +168,24 @@ function Bullet(x, y, mousex, mousey) {
 	this.x = x;
 	this.y = y;
 	this.draw = function() {
-		console.log(this.dx, this.dy);
 		this.x += this.dx;
 		this.y += this.dy;
 		jaws.context.drawImage(jaws.assets.get("res/bullet.png"), this.x, this.y)
 	}
 }
 
-function Particle(x,y,xdir, ydir) {
-	this.x = x;
-	this.y = y;
-	this.xdir = xdir;
-	this.ydir = ydir;
-	this.draw = function() {
-		this.ydir += gravity;
-		this.y += this.ydir;
-		if (this.xdir > 0) this.xdir -= 1;
-		this.x += xdir;
-		context.beginPath();
-		context.arc(this.x, this.y, 2, 0, Math.PI*2, true); 
-		context.stroke();
-	}
-}
+//function Particle(x,y,xdir, ydir) {
+//	this.x = x;
+//	this.y = y;
+//	this.xdir = xdir;
+//	this.ydir = ydir;
+//	this.draw = function() {
+//		this.ydir += gravity;
+//		this.y += this.ydir;
+//		if (this.xdir > 0) this.xdir -= 1;
+//		this.x += xdir;
+//		context.beginPath();
+//		context.arc(this.x, this.y, 2, 0, Math.PI*2, true); 
+//		context.stroke();
+//	}
+//}
