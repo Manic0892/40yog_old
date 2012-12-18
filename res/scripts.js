@@ -8,7 +8,7 @@ var context;
 var bullets;
 
 var speed = 5;
-var bulletSpeed = 2;
+var bulletSpeed = 13;
 var gravity = 0.2;
 var arm;
 
