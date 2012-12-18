@@ -160,7 +160,7 @@ function Bullet(x, y, mousex, mousey) {
 	this.dy  = mousey - y;
 	this.dx /= 10;
 	this.dy /= 10;
-	var vectorLength = Math.sqrt(this.dx*this.dx + this.dy * this.dy);
+	var vectorLength = Math.sqrt(this.dx*this.dx + this.dy*this.dy);
 	this.dx /= vectorLength;
 	this.dy /= vectorLength;
 	this.dx *= bulletSpeed;
@@ -170,7 +170,7 @@ function Bullet(x, y, mousex, mousey) {
 	this.draw = function() {
 		this.x += this.dx;
 		this.y += this.dy;
-		jaws.context.drawImage(jaws.assets.get("res/bullet.png"), this.x, this.y)
+		jaws.context.drawImage(jaws.assets.get("res/bullet.png"), this.x-5, this.y-5);
 	}
 }
 
