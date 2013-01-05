@@ -12,6 +12,8 @@ var bulletSpeed = 13;
 var gravity = 0.2;
 var arm;
 var viewport;
+var tile_map;
+
 
 
 window.onload = function() {
@@ -56,6 +58,14 @@ function playState() {
 		player.canFire = true;
 		jaws.on_keydown('esc', function() {jaws.switchGameState(menuState)});
 		jaws.preventDefaultKeys(['up', 'down', 'left', 'right', 'space']);
+		
+		blocks = new jaws.SpriteList();
+		blocks.push( new jaws.Sprite({image: 'res/block.png', x: 0, y: 0}) );
+		blocks.push( new jaws.Sprite({image: 'res/block.png', x: 64, y: 64}) );
+		blocks.push( new jaws.Sprite({image: 'res/block.png', x: 128, y: 64}) );
+		blocks.push( new jaws.Sprite({image: 'res/block.png', x: 128, y: 128}) );
+		tile_map = new jaws.TileMap({size: [10,10], cell_size: [32,32]});
+		tile_map.push(blocks);
 	}
 	
 	this.update = function() {
@@ -102,6 +112,7 @@ function playState() {
 		forceInsideCanvas(player); 
 		bullets.removeIf(isOutsideCanvas);
 		viewport.centerAround(player);
+		
 		//particles.removeIf(isOutsideCanvas);
 		
 		//TODO: MAKE BULLETS COME OUT OF GUN.  DO THIS BY MAKING SPRITE WHERE BEGINNING OF ARM AND GUN ARE AT THE EXACT SAME Y COORDINATE.  TEST.  ALSO MAKE SURE YOU CAN DRAW ALONG THE DIRECTION VECTOR O HE POINT WHERE THE GUN SHOULD BE, THEN SPAWN THE BULLET THERE.
@@ -117,6 +128,7 @@ function playState() {
 			player.draw();
 			bullets.draw();
 			arm.draw();
+			blocks.draw();
 		});
 		//console.log(jaws.game_loop.fps);
 		console.log(bullets.length)
