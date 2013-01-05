@@ -11,6 +11,7 @@ var speed = 5;
 var bulletSpeed = 13;
 var gravity = 0.2;
 var arm;
+var viewport;
 
 
 window.onload = function() {
@@ -27,6 +28,7 @@ function startGame() {
 }
 
 function playState() {
+	viewport = new jaws.Viewport({max_x: 20000, max_y: 20000})
 	this.setup = function () {
 		canvas = $('#gamePlay')[0];
 		
@@ -59,7 +61,7 @@ function playState() {
 	this.update = function() {
 		if (jaws.pressed('left_mouse_button')) {
 			if (player.canFire) {
-				bullets.push(new Bullet(arm.x, arm.y-arm.height/2, jaws.mouse_x, jaws.mouse_y));
+				bullets.push(new Bullet(arm.x, arm.y-arm.height/2, jaws.mouse_x+viewport.x, jaws.mouse_y+viewport.y));
 				player.canFire = false;
 				window.setTimeout(function() {player.canFire = true;}, 600);
 			}
@@ -83,7 +85,7 @@ function playState() {
 		}
 		arm.x = player.x+player.width/2;
 		arm.y = player.y+player.height/4;
-		var angle = Math.atan2(jaws.mouse_y - arm.y, jaws.mouse_x - arm.x);
+		var angle = Math.atan2(jaws.mouse_y - arm.y+viewport.y, jaws.mouse_x - arm.x + viewport.x);
 		//var angle = calcAngle({x:arm.x, y:arm.y},{x:jaws.mouse_x, y:jaws.mouse_y});
 		arm.rotateTo(angle*60);
 		//console.log(angle*60);
@@ -96,8 +98,10 @@ function playState() {
 		//	//for (var i = 0; i < 7; i++)
 		//	//	particles.push(new Particle(player.x, player.y, (Math.floor(Math.random()*20)-10)/5, (Math.floor(Math.random()*-10+5))/.7));
 		//}
+		
 		forceInsideCanvas(player); 
 		bullets.removeIf(isOutsideCanvas);
+		viewport.centerAround(player);
 		//particles.removeIf(isOutsideCanvas);
 		
 		//TODO: MAKE BULLETS COME OUT OF GUN.  DO THIS BY MAKING SPRITE WHERE BEGINNING OF ARM AND GUN ARE AT THE EXACT SAME Y COORDINATE.  TEST.  ALSO MAKE SURE YOU CAN DRAW ALONG THE DIRECTION VECTOR O HE POINT WHERE THE GUN SHOULD BE, THEN SPAWN THE BULLET THERE.
@@ -106,9 +110,16 @@ function playState() {
 	
 	this.draw = function() {
 		jaws.clear();        // Same as: context.clearRect(0,0,jaws.width,jaws.height)
-		player.draw();
-		bullets.draw();  // will call draw() on all items in the list
-		arm.draw();
+		//player.draw();
+		//bullets.draw();  // will call draw() on all items in the list
+		//arm.draw();
+		viewport.apply(function() {
+			player.draw();
+			bullets.draw();
+			arm.draw();
+		});
+		//console.log(jaws.game_loop.fps);
+		console.log(bullets.length)
 		//particles.draw();
 	}
 }
@@ -145,7 +156,7 @@ function menuState() {
 }
 
 function isOutsideCanvas(item) {
-	return (item.x < 0 || item.y < 0 || item.x > canvas.width || item.y > canvas.height);
+	return (item.x < 0 || item.y < 0 || item.x > viewport.max_x || item.y > viewport.max_y);
 }
 
 function forceInsideCanvas(item) {
