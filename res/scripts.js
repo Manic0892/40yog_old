@@ -7,7 +7,7 @@ var canvas;
 var context;
 var bullets;
 
-var speed = 5;
+var speed = 4;
 var bulletSpeed = 13;
 var gravity = 0.2;
 var arm;
@@ -15,22 +15,18 @@ var viewport;
 var tile_map;
 
 
-
 window.onload = function() {
+	jaws.unpack();
 	jaws.assets.add('res/plane.png');
 	jaws.assets.add('res/bullet.png');
 	jaws.assets.add('res/droid.png');
 	jaws.assets.add('res/droidarm.png');
-	startGame();
-}
-
-function startGame() {
-	gameState = new menuState();
-	jaws.start(gameState);
+	jaws.assets.add('res/block.png');
+	jaws.start(menuState);
 }
 
 function playState() {
-	viewport = new jaws.Viewport({max_x: 20000, max_y: 20000})
+	viewport = new jaws.Viewport({max_x: 3200, max_y: 3200})
 	this.setup = function () {
 		canvas = $('#gamePlay')[0];
 		
@@ -40,7 +36,7 @@ function playState() {
 		
 		var anim = new jaws.Animation({sprite_sheet: "res/droid.png", frame_size: [11,15], frame_duration: 100});
 		
-		player = new jaws.Sprite({x:100, y:300, scale: 4});
+		player = new jaws.Sprite({x:100, y:300, scale: 2});
 		
 		player.anim_default = anim.slice(0,5);
 		player.anim_up = anim.slice(6,8);
@@ -52,7 +48,7 @@ function playState() {
 		
 		jaws.context.mozImageSmoothingEnabled = false;
 		
-		arm = new jaws.Sprite({image: 'res/droidarm.png', x:player.x+player.width/2, y:player.y+player.height/2, scale:4, anchor:'left_center'});
+		arm = new jaws.Sprite({image: 'res/droidarm.png', x:player.x+player.width/2, y:player.y+player.height/2, scale:2, anchor:'left_center'});
 		
 		
 		player.canFire = true;
@@ -66,6 +62,7 @@ function playState() {
 		blocks.push( new jaws.Sprite({image: 'res/block.png', x: 128, y: 128}) );
 		tile_map = new jaws.TileMap({size: [10,10], cell_size: [32,32]});
 		tile_map.push(blocks);
+		console.log(tile_map.toString());
 	}
 	
 	this.update = function() {
@@ -80,18 +77,22 @@ function playState() {
 		if(jaws.pressed('left')) {
 			player.setImage(player.anim_left.next());
 			player.x -= speed;
+			if (tile_map.atRect(player.rect()).length > 0) {player.x += speed;}
 		}
 		if(jaws.pressed('right')) {
 			player.setImage(player.anim_right.next());
 			player.x += speed;
+			if (tile_map.atRect(player.rect()).length > 0) {player.x -= speed;}
 		}
 		if(jaws.pressed('up')) {
 			player.setImage(player.anim_up.next());
 			player.y -= speed;
+			if (tile_map.atRect(player.rect()).length > 0) {player.y += speed;}
 		}
 		if(jaws.pressed('down')) {
 			player.setImage(player.anim_down.next());
 			player.y += speed;
+			if (tile_map.atRect(player.rect()).length > 0) {player.y -= speed;}
 		}
 		arm.x = player.x+player.width/2;
 		arm.y = player.y+player.height/4;
@@ -112,6 +113,8 @@ function playState() {
 		forceInsideCanvas(player); 
 		bullets.removeIf(isOutsideCanvas);
 		viewport.centerAround(player);
+		console.log(tile_map.atRect(player.rect()).length);
+		//console.log(player.rect().toString());
 		
 		//particles.removeIf(isOutsideCanvas);
 		
@@ -131,7 +134,7 @@ function playState() {
 			blocks.draw();
 		});
 		//console.log(jaws.game_loop.fps);
-		console.log(bullets.length)
+		//console.log(bullets.length)
 		//particles.draw();
 	}
 }
