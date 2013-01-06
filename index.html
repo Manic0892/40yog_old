@@ -1,16 +1,22 @@
 <html>
 	<head>
-		<link rel='stylesheet' type='text/css' href='./res/styles.css' />
-		<script src='./res/scripts.js' type='text/javascript'></script>
-		<script src='./libs/kinetic-v4.1.2.min.js'></script>
+		 <!--Main Stylesheet -->
+		<link rel='stylesheet' type='text/css' href='./res/styles/main.css' />
+		
+		 <!--Game Scripts -->
+		<script src='./res/scripts/main.js' type='text/javascript'></script>
+		<script src='./res/scripts/states.js' type='text/javascript'></script>
+		<script src='./res/scripts/levels.js' type='text/javascript'></script>
+		<script src='./res/scripts/entities.js' type='text/javascript'></script>
+		<script src='./res/scripts/utils.js' type='text/javascript'></script>
+		
+		<!--Libraries-->
 		<script src='./libs/jaws.js'></script>
 		<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'></script>
-		<!--<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>-->
-		<!--<script src='./libs/crafty.js'></script>-->
 	</head>
 	<body>
 		<div id='fullWrapper'>
-			<canvas id='gamePlay' width=1000 height=750>Your browser doesn't support canvases.  What a shame.</canvas>
+			<canvas id='gamePlay' width=1000 height=750>Your browser does not support the HTML5 canvas element.</canvas>
 		</div>
 	</body>
 </html>
