@@ -9,10 +9,11 @@ var bullets;
 
 var speed = 4;
 var bulletSpeed = 13;
-var gravity = 0.2;
 var arm;
 var viewport;
 var tile_map;
+var gravity = .2;
+var terminalVelocity = 6;
 
 
 window.onload = function() {
@@ -37,6 +38,8 @@ function playState() {
 		var anim = new jaws.Animation({sprite_sheet: "res/droid.png", frame_size: [11,15], frame_duration: 100});
 		
 		player = new jaws.Sprite({x:100, y:300, scale: 2});
+		player.terminalVelocity = terminalVelocity;
+		player.vy = 0;
 		
 		player.anim_default = anim.slice(0,5);
 		player.anim_up = anim.slice(6,8);
@@ -61,7 +64,7 @@ function playState() {
 		blocks.push( new jaws.Sprite({image: 'res/block.png', x: 128, y: 64}) );
 		blocks.push( new jaws.Sprite({image: 'res/block.png', x: 128, y: 128}) );
 		for (var i = 0; i < 100; i++) {
-			blocks.push( new jaws.Sprite({image:'res/block.png', x:i*32, y:1028}));
+			blocks.push( new jaws.Sprite({image:'res/block.png', x:i*32, y:512}));
 		}
 		tile_map = new jaws.TileMap({size: [100,100], cell_size: [32,32]});
 		tile_map.push(blocks);
@@ -113,6 +116,16 @@ function playState() {
 				player.y -= speed;
 			}
 		}
+		if (player.vy < player.terminalVelocity) {
+			player.vy += gravity;
+		}
+		if (isHittingTilemap(player)) {
+			player.setImage(player.anim_default.next());
+			player.vy = 0;
+			var block = tile_map.atRect(player.rect())[0];
+			player.y = block.rect().y - player.height - 1;
+		}
+		player.y += player.vy;
 		arm.x = player.x+player.width/2;
 		arm.y = player.y+player.height/4;
 		var angle = Math.atan2(jaws.mouse_y - arm.y+viewport.y, jaws.mouse_x - arm.x + viewport.x);
