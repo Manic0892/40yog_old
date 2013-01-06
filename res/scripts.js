@@ -62,7 +62,7 @@ function playState() {
 		blocks.push( new jaws.Sprite({image: 'res/block.png', x: 128, y: 128}) );
 		tile_map = new jaws.TileMap({size: [10,10], cell_size: [32,32]});
 		tile_map.push(blocks);
-		console.log(tile_map.toString());
+		//console.log(tile_map.toString());
 	}
 	
 	this.update = function() {
@@ -121,7 +121,8 @@ function playState() {
 		forceInsideCanvas(player); 
 		bullets.removeIf(isOutsideCanvas);
 		viewport.centerAround(player);
-		console.log(tile_map.atRect(player.rect()).length);
+		bullets.removeIf(isHittingTilemap);
+		//console.log(tile_map.atRect(player.rect()).length);
 		//console.log(player.rect().toString());
 		
 		//particles.removeIf(isOutsideCanvas);
@@ -209,10 +210,15 @@ function Bullet(x, y, mousex, mousey) {
 	this.dy *= bulletSpeed;
 	this.x = x;
 	this.y = y;
+	this.rectangle = new jaws.Rect(this.x,this.y,10,10);
 	this.draw = function() {
 		this.x += this.dx;
 		this.y += this.dy;
 		jaws.context.drawImage(jaws.assets.get("res/bullet.png"), this.x-5, this.y-5);
+		this.rectangle = new jaws.Rect(this.x,this.y,10,10);
+	}
+	this.rect = function() {
+		return this.rectangle;
 	}
 }
 
