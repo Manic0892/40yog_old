@@ -60,10 +60,7 @@ function playState() {
 		blocks.push( new jaws.Sprite({image: 'res/block.png', x: 64, y: 64}) );
 		blocks.push( new jaws.Sprite({image: 'res/block.png', x: 128, y: 64}) );
 		blocks.push( new jaws.Sprite({image: 'res/block.png', x: 128, y: 128}) );
-		for (var i = 0; i < 100; i++) {
-			blocks.push( new jaws.Sprite({image:'res/block.png', x:i*32, y:1028}));
-		}
-		tile_map = new jaws.TileMap({size: [100,100], cell_size: [32,32]});
+		tile_map = new jaws.TileMap({size: [10,10], cell_size: [32,32]});
 		tile_map.push(blocks);
 		//console.log(tile_map.toString());
 	}
@@ -81,37 +78,29 @@ function playState() {
 			player.setImage(player.anim_left.next());
 			player.x -= speed;
 			//if (tile_map.atRect(player.rect()).length > 0) {player.x += speed;}
-			if (isHittingTilemap(player)) {
-				player.setImage(player.anim_default.next());
+			if (isHittingTilemap(player))
 				player.x += speed;
-			}
 		}
 		if(jaws.pressed('right')) {
 			player.setImage(player.anim_right.next());
 			player.x += speed;
 			//if (tile_map.atRect(player.rect()).length > 0) {player.x -= speed;}
-			if (isHittingTilemap(player)) {
-				player.setImage(player.anim_default.next());
+			if (isHittingTilemap(player))
 				player.x -= speed;
-			}
 		}
 		if(jaws.pressed('up')) {
 			player.setImage(player.anim_up.next());
 			player.y -= speed;
 			//if (tile_map.atRect(player.rect()).length > 0) {player.y += speed;}
-			if (isHittingTilemap(player)) {
-				player.setImage(player.anim_default.next());
+			if (isHittingTilemap(player))
 				player.y += speed;
-			}
 		}
 		if(jaws.pressed('down')) {
 			player.setImage(player.anim_down.next());
 			player.y += speed;
 			//if (tile_map.atRect(player.rect()).length > 0) {player.y -= speed;}
-			if (isHittingTilemap(player)) {
-				player.setImage(player.anim_default.next());
+			if (isHittingTilemap(player))
 				player.y -= speed;
-			}
 		}
 		arm.x = player.x+player.width/2;
 		arm.y = player.y+player.height/4;
@@ -201,9 +190,9 @@ function isHittingTilemap(item) {
 
 function forceInsideCanvas(item) {
 	if(item.x < 0) item.x = 0;
-	if(item.x + item.width > 3200) item.x = canvas.width - item.width;
+	if(item.x + item.width > canvas.width) item.x = canvas.width - item.width;
 	if(item.y < 0) item.y = 0;
-	if(item.y + item.height  > 3200) item.y = canvas.height - item.height;
+	if(item.y + item.height  > canvas.height) item.y = canvas.height - item.height;
 }
 
 //objects
