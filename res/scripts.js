@@ -77,22 +77,30 @@ function playState() {
 		if(jaws.pressed('left')) {
 			player.setImage(player.anim_left.next());
 			player.x -= speed;
-			if (tile_map.atRect(player.rect()).length > 0) {player.x += speed;}
+			//if (tile_map.atRect(player.rect()).length > 0) {player.x += speed;}
+			if (isHittingTilemap(player))
+				player.x += speed;
 		}
 		if(jaws.pressed('right')) {
 			player.setImage(player.anim_right.next());
 			player.x += speed;
-			if (tile_map.atRect(player.rect()).length > 0) {player.x -= speed;}
+			//if (tile_map.atRect(player.rect()).length > 0) {player.x -= speed;}
+			if (isHittingTilemap(player))
+				player.x -= speed;
 		}
 		if(jaws.pressed('up')) {
 			player.setImage(player.anim_up.next());
 			player.y -= speed;
-			if (tile_map.atRect(player.rect()).length > 0) {player.y += speed;}
+			//if (tile_map.atRect(player.rect()).length > 0) {player.y += speed;}
+			if (isHittingTilemap(player))
+				player.y += speed;
 		}
 		if(jaws.pressed('down')) {
 			player.setImage(player.anim_down.next());
 			player.y += speed;
-			if (tile_map.atRect(player.rect()).length > 0) {player.y -= speed;}
+			//if (tile_map.atRect(player.rect()).length > 0) {player.y -= speed;}
+			if (isHittingTilemap(player))
+				player.y -= speed;
 		}
 		arm.x = player.x+player.width/2;
 		arm.y = player.y+player.height/4;
@@ -173,6 +181,11 @@ function menuState() {
 function isOutsideCanvas(item) {
 	return (item.x < 0 || item.y < 0 || item.x > viewport.max_x || item.y > viewport.max_y);
 }
+
+function isHittingTilemap(item) {
+	return (tile_map.atRect(item.rect()).length > 0);
+}
+
 
 function forceInsideCanvas(item) {
 	if(item.x < 0) item.x = 0;
