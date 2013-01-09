@@ -1,15 +1,21 @@
 <html>
 	<head>
+		<style>
+			#canvas {
+				border: 1px solid black;
+			}
+		</style>
 		<script type='text/javascript'>
 			window.onload = function() {
 				var stage = new Kinetic.Stage({
 					container: "canvas",
-					width: 500,
-					height: 500
+					width: window.innerWidth-50,
+					height: window.innerHeight-50
 				});
+				stage.setDraggable(true);
 				
 				var draggableLayer = new Kinetic.Layer();
-				draggableLayer.setDraggable("draggable");
+				//draggableLayer.setDraggable("draggable");
 				
 				//a large transparent background to make everything draggable
 				var background = new Kinetic.Rect({
@@ -39,6 +45,13 @@
 					y: 500,
 					radius: 60,
 					fill: "rgb("+ parseInt(255*3) +",0,0)"
+				});
+				mainCircle.setDraggable("draggable");
+				mainCircle.on('mouseover', function() {
+					stage.setDraggable(false);
+				});
+				mainCircle.on('mouseout', function() {
+					stage.setDraggable(true);
 				});
 				draggableLayer.add(mainCircle);
 				
