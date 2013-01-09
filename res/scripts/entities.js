@@ -1,4 +1,15 @@
 function world() {
-	this.blocks = [];
-	this.blockTypes = [];
+	this.height;
+	this.width;
+	this.blocks;
+}
+
+function coord(x,y) {
+	this.x = x;
+	this.y = y;
+}
+
+function blockType(url) {
+	this.url = url;
+	this.coords = [];
 }
