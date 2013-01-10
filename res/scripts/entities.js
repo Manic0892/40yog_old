@@ -1,7 +1,16 @@
 function world() {
 	this.height;
 	this.width;
-	this.blocks;
+	this.blocks = [];
+	this.createBlocks = new function(url, coords) {
+		this.blocks.push(new blockType(url));
+		this.blocks[length-1].coords = coords;
+	}
+}
+
+function level() {
+	this.world = new world();
+	this.events = [];
 }
 
 function coord(x,y) {
