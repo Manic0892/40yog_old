@@ -45,9 +45,14 @@ function State(options) {
 		this.paused = false;
 	}
 	this.update = function() {
-		if (jaws.pressed('esc'))
+		if (jaws.pressed('esc') && canPause == true) {
 			this.paused = !this.paused;
-		console.log(this.paused);
+			canPause = false;
+			window.setTimeout(function() {
+				canPause = true;
+			}, 600);
+		}
+		console.log(canPause);
 	}
 	this.draw = function() {
 		jaws.clear();
