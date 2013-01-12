@@ -32,9 +32,10 @@ var menuState = new function() {
 		else if (selection > this.items.length-1)
 			selection = this.items.length-1;
 		this.selected = selection;
-		if (jaws.pressed('left_mouse_button'))
-			jaws.switchGameState(states[1]);
-		console.log(selection);
+		if (jaws.pressed('left_mouse_button')) {
+			if (this.selected == 0)
+				jaws.switchGameState(states[1]);
+		}
 	}
 	this.draw = function() {
 		jaws.clear();
@@ -54,4 +55,3 @@ states.push(menuState);
 for (i in levels) {
 	states.push(new State());
 }
-//states.index = 0;

@@ -42,9 +42,12 @@ function State(options) {
 	this.setup = function() {
 		this.level = new level();
 		this.level.world.build();
+		this.paused = false;
 	}
-	this,update = function() {
-		
+	this.update = function() {
+		if (jaws.pressed('esc'))
+			this.paused = !this.paused;
+		console.log(this.paused);
 	}
 	this.draw = function() {
 		jaws.clear();
