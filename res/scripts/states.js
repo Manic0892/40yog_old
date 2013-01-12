@@ -11,6 +11,7 @@
 //		this.level.world.spriteList.draw();
 //	}
 //}
+var states = [];
 
 var menuState = new function() {
 	this.setup = function() {
@@ -31,6 +32,8 @@ var menuState = new function() {
 		else if (selection > this.items.length-1)
 			selection = this.items.length-1;
 		this.selected = selection;
+		if (jaws.pressed('left_mouse_button'))
+			jaws.switchGameState(states[1]);
 		console.log(selection);
 	}
 	this.draw = function() {
@@ -41,14 +44,14 @@ var menuState = new function() {
 			jaws.context.fillStyle =  (i == this.selected) ? "Red" : "Black";
 			jaws.context.strokeStyle =  "rgba(200,200,200,0.0)";
 			jaws.context.fillText(this.items[i], 30, this.initoffset + i * this.spacing);
-		}  
+		}
 	}
 }
 
-var states = [];
 
 states.push(menuState);
 
 for (i in levels) {
 	states.push(new State());
 }
+//states.index = 0;
