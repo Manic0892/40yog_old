@@ -37,3 +37,17 @@ function blockType(url) {
 	this.url = url;
 	this.coords = [];
 }
+
+function State(options) {
+	this.setup = function() {
+		this.level = new level();
+		this.level.world.build();
+	}
+	this,update = function() {
+		
+	}
+	this.draw = function() {
+		jaws.clear();
+		this.level.world.spriteList.draw();
+	}
+}

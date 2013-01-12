@@ -1,3 +1,3 @@
-//window.onload = function() {
-//	var level1 = new level();
-//}
+var levels = [];
+
+levels.push(new level());
