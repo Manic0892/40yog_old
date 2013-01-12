@@ -1,21 +1,29 @@
 function world(options) {
-	this.defaultOptions = {width: 500, height: 500, cellSize: 32};
+	this.defaultOptions = {width: 5, height: 5, cellSize: 32};
 	if (options == null) {
 		options = this.defaultOptions;
 	}
 	this.height = options.height;
 	this.width = options.width;
 	this.cellSize = options.cellSize;
-	this.blocks = [1,1,1
-		       ];
-	this.blockURLs = [];
+	this.blocks = [[1,1,1,1,1],[1,0,0,0,1],[1,0,0,0,1],[1,0,0,0,1],[1,1,1,1,1]];
+	this.blockURLs = ['res/img/block.png'];
+	this.build = function() {
+		this.spriteList = new jaws.SpriteList();
+		for (i in this.blocks) {
+			for (j in this.blocks[i]) {
+				if (this.blocks[i][j] != 0)
+					this.spriteList.push(new jaws.Sprite({image:this.blockURLs[this.blocks[i][j]-1],x:j*32, y:i*32}));
+			}
+		}
+	}
 }
 
 function level(options) {
 	if (options == null) {
 		options = {cellSize:32};
 	}
-	//this.world = new world();
+	this.world = new world();
 	this.cellSize = options.cellSize || 32;
 	this.events = [];
 }
