@@ -1,4 +1,9 @@
 window.onload = function() {
-	//jaws.assets.add(['res/img/block.png', 'res/img/bullet.png', 'res/img/droid.png', 'res/img/droidarm.png']);
+	var assetList = [];
+	for (var i in levels) {
+		for (var j in levels[i].blockURLs)
+			assetList.push(levels[i].blockURLs[j]);
+	}
+	jaws.assets.add(assetList);
 	jaws.start(states[0]);
 }

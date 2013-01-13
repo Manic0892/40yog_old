@@ -1,13 +1,34 @@
-function world(options) {
-	this.defaultOptions = {width: 5, height: 5, cellSize: 32};
+function State(level) {
+	this.setup = function() {
+		this.level = level;
+		this.level.build();
+		this.paused = false;
+	}
+	this.update = function() {
+		for (i in this.level.events) {
+			if (this.level.events[i].trig()) {
+				this.level.events[i].exec();
+			}
+		}
+	}
+	this.draw = function() {
+		jaws.clear();
+		this.level.spriteList.draw();
+	}
+}
+
+function Level(options) {
+	this.defaultOptions = {cellSize: 32, height: 5, width: 5, blocks: [[1,1,1,1,1],[1,0,0,0,1],[1,0,0,0,1],[1,0,0,0,1],[1,1,1,1,1]], blockURLs: ['res/img/block.png'], events: []};
 	if (options == null) {
 		options = this.defaultOptions;
 	}
-	this.height = options.height;
-	this.width = options.width;
-	this.cellSize = options.cellSize;
-	this.blocks = [[1,1,1,1,1],[1,0,0,0,1],[1,0,0,0,1],[1,0,0,0,1],[1,1,1,1,1]];
-	this.blockURLs = ['res/img/block.png'];
+	this.height = options.height || this.defaultOptions.height;
+	this.width = options.width || this.defaultOptions.width;
+	this.cellSize = options.cellSize || this.defaultOptions.cellSize;
+	this.blocks = options.blocks || this.defaultOptions.blocks;
+	this.blockURLs = options.blockURLs || this.defaultOptions.blockURLs;
+	this.events = options.events || this.defaultOptions.events;
+	
 	this.build = function() {
 		this.spriteList = new jaws.SpriteList();
 		for (i in this.blocks) {
@@ -19,59 +40,11 @@ function world(options) {
 	}
 }
 
-function level(options) {
-	this.defaultOptions = {cellSize: 32};
-	if (options == null) {
-		options = this.defaultOptions;
-	}
-	this.world = new world();
-	this.cellSize = options.cellSize || 32;
-	this.events = [];
-}
-
-function coord(x,y) {
-	this.x = x;
-	this.y = y;
+function Player() {
+	
 }
 
 function event(options) {
 	this.trig = options.trig;
 	this.exec = options.exec;
-}
-
-function blockType(url) {
-	this.url = url;
-	this.coords = [];
-}
-
-function State(options) {
-	this.setup = function() {
-		this.level = new level();
-		this.level.world.build();
-		this.paused = false;
-		this.level.events.push({trig: function() {
-			return jaws.pressed('w');
-		}, exec: function() {
-			console.log('success');
-		}});
-	}
-	this.update = function() {
-		for (i in this.level.events) {
-			if (this.level.events[i].trig()) {
-				this.level.events[i].exec();
-			}
-		}
-		if (jaws.pressed('esc') && canPause == true) {
-			this.paused = !this.paused;
-			canPause = false;
-			window.setTimeout(function() {
-				canPause = true;
-			}, 600);
-		}
-		console.log(canPause);
-	}
-	this.draw = function() {
-		jaws.clear();
-		this.level.world.spriteList.draw();
-	}
 }
