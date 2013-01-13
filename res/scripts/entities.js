@@ -20,8 +20,9 @@ function world(options) {
 }
 
 function level(options) {
+	this.defaultOptions = {cellSize: 32};
 	if (options == null) {
-		options = {cellSize:32};
+		options = this.defaultOptions;
 	}
 	this.world = new world();
 	this.cellSize = options.cellSize || 32;
@@ -31,6 +32,11 @@ function level(options) {
 function coord(x,y) {
 	this.x = x;
 	this.y = y;
+}
+
+function event(options) {
+	this.trig = options.trig;
+	this.exec = options.exec;
 }
 
 function blockType(url) {
@@ -43,8 +49,18 @@ function State(options) {
 		this.level = new level();
 		this.level.world.build();
 		this.paused = false;
+		this.level.events.push({trig: function() {
+			return jaws.pressed('w');
+		}, exec: function() {
+			console.log('success');
+		}});
 	}
 	this.update = function() {
+		for (i in this.level.events) {
+			if (this.level.events[i].trig()) {
+				this.level.events[i].exec();
+			}
+		}
 		if (jaws.pressed('esc') && canPause == true) {
 			this.paused = !this.paused;
 			canPause = false;
