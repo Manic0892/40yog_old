@@ -13,7 +13,7 @@ function world(options) {
 		for (i in this.blocks) {
 			for (j in this.blocks[i]) {
 				if (this.blocks[i][j] != 0)
-					this.spriteList.push(new jaws.Sprite({image:this.blockURLs[this.blocks[i][j]-1],x:j*32, y:i*32}));
+					this.spriteList.push(new jaws.Sprite({image:this.blockURLs[this.blocks[i][j]-1],x:j*this.cellSize, y:i*this.cellSize}));
 			}
 		}
 	}
