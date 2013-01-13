@@ -81,3 +81,6 @@ function loadImage() {
 	
 }
 
+function exec() {
+	$('#newLevelInput').modal({overlayClose:true});
+}
