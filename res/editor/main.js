@@ -4,6 +4,8 @@ var cellSize = 32;
 var stage;
 var layer;
 
+var levels = [];
+
 window.onload = function() {
 	
 	stage = new Kinetic.Stage({
@@ -61,10 +63,12 @@ window.onload = function() {
 	}
 	
 	var zoom = function(e) {
-		var zoomAmount = e.wheelDeltaY*0.001;
-		if (layer.getScale().x+zoomAmount > 0)
-		layer.setScale(layer.getScale().x+zoomAmount)
-		layer.draw();
+		if (stage.getMousePosition()) {
+			var zoomAmount = e.wheelDeltaY*0.001;
+			if (layer.getScale().x+zoomAmount > 0)
+				layer.setScale(layer.getScale().x+zoomAmount)
+			layer.draw();
+		}
 	}
 	
 	document.addEventListener("mousewheel", zoom, false);
