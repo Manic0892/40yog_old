@@ -5,13 +5,14 @@ var stage;
 var layer;
 
 var levels = [];
+var blocks = [];
 
 window.onload = function() {
 	
 	stage = new Kinetic.Stage({
 		container: "canvas",
 		width: window.innerWidth-300,
-		height: window.innerHeight-50
+		height: window.innerHeight-window.innerHeight/25
 	});
 	stage.setDraggable(true);
 	
@@ -20,10 +21,11 @@ window.onload = function() {
 	var imageObj = new Image();
 	imageObj.onload = function() {
 		var mainCircle = new Kinetic.Image({
-			x: 500,
-			y: 500,
+			x: 128,
+			y: 128,
 			image: imageObj
 		});
+		mainCircle.isBlock = true;
 		mainCircle.setDraggable("draggable");
 		mainCircle.on('mouseover', function() {
 			stage.setDraggable(false);
@@ -82,5 +84,26 @@ function loadImage() {
 }
 
 function exec() {
-	$('#newLevelInput').modal({overlayClose:true});
+	var path = $('#inFile').val();
+	path = path.replace("C:\\fakepath\\", "");
+	path = ('res/img/') + path;
+	console.log(path);
+	var image2 = new Image();
+	image2.src = path;
+	image2.onload = function() {
+		var newimage = new Kinetic.Image({
+			x:256,
+			y:256,
+			image:image2
+		});
+		layer.add(newimage);
+		stage.draw();
+	}
+	//$('#newLevelInput').modal({overlayClose:true});
+}
+
+function newLevel() {
+	console.log($('#cellSize').val());
+	$.modal.close();
+	
 }

@@ -9,9 +9,11 @@
 				float:right;
 				width:260px;
 				word-break: break-all;
+				overflow-y:scroll;
+				height:100%;
 			}
 			#simplemodal-overlay {background-color:#000;}
-			#simplemodal-container {background-color:#333; border:8px solid #444; padding:12px; color: gray;}
+			#simplemodal-container {background-color:#333; border:8px solid #444; padding:12px; color: white;}
 		</style>
 		<script src='./res/editor/main.js' type='text/javascript'></script>
 		<script src='./libs/kinetic-v4.1.2.min.js' type='text/javascript'></script>
@@ -21,8 +23,18 @@
 	<body>
 		<div id='canvas'></div>
 		<div id='sidebar'>
-			<button onclick='exec()'>Hello</button>
+			<form>
+				<input id='inFile' type='file' value='.'>asdfasdf</input>
+				<button type='button' onclick='exec()'>Hello</button>
+			</form>
 		</div>
-		<div id='newLevelInput' style='display: none;'>asdfasdfasdfsdf</div>
+		<div id='newLevelInput' style='display: none;'>
+			<form>
+				<input type='number' value='0' id='cellSize'>Cell Size</input><br />
+				<input type='number' value='0' id='height'>Height</input><br />
+				<input type='number' value='0' id='width'>Width</input><br />
+				<button type='button' style='float:right' onclick='newLevel();'>asdf</button>
+			</form>
+		</div>
 	</body>
 </html>
