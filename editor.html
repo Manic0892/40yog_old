@@ -11,9 +11,19 @@
 				word-break: break-all;
 				overflow-y:scroll;
 				height:100%;
+				border-collapse: collapse;
 			}
 			#simplemodal-overlay {background-color:#000;}
 			#simplemodal-container {background-color:#333; border:8px solid #444; padding:12px; color: white;}
+			#listElement {
+				border: 1px solid black;
+				padding: 3px;
+				height: 55px;
+			}
+			.descriptor {
+				float:right;
+				text-align:right;
+			}
 		</style>
 		<script src='./res/editor/main.js' type='text/javascript'></script>
 		<script src='./libs/kinetic-v4.1.2.min.js' type='text/javascript'></script>
@@ -24,8 +34,9 @@
 		<div id='canvas'></div>
 		<div id='sidebar'>
 			<form>
-				<input id='inFile' type='file' value='.'>asdfasdf</input>
-				<button type='button' onclick='exec()'>Hello</button>
+				<input id='inFile' type='file' value='.' />
+				<button type='button' onclick='addNewBlock()'>Add block</button>
+				<hr />
 			</form>
 		</div>
 		<div id='newLevelInput' style='display: none;'>
