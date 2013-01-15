@@ -3,7 +3,8 @@ var layer;
 var selected = '';
 
 var levels = [];
-var blockURLs = [];
+levels.blockURLs = [];
+levels.currLevel;
 var blockNum;
 
 window.onload = function() {
@@ -17,10 +18,9 @@ window.onload = function() {
 	stage.add(layer);
 	stage.draw();
 	var path = 'res/img/null.png';
-	$('#sidebar').append('<div id="listElement"><img height="50" src="'+path+'" onclick="select(\'0\')"></img><div class="descriptor">Delete<br />0x0</div></div>');
+	$('#sidebar').append('<div id="listElement"><img height="50" src="'+path+'" onclick="select(\'X\')"></img><div class="descriptor">Delete<br />0x0</div></div>');
 	path = 'res/img/placeholder.png';
 	$('#sidebar').append('<div id="listElement"><img height="50" src="'+path+'" onclick="select(\'P\')"></img><div class="descriptor">Player<br />0x0</div></div>');
-	blockURLs.push(null);
 }
 
 function addNewBlock() {
@@ -30,11 +30,11 @@ function addNewBlock() {
 	var img = new Image();
 	img.src = fullPath;
 	img.onload = function() {
-		blockURLs.push(fullPath);
+		levels.blockURLs.push(fullPath);
 		if (this.width > this.height)
-			$('#sidebar').append('<div id="listElement"><img width="50" src="'+fullPath+'" onclick="select(\'' + (blockURLs.length - 1) + '\')"></img><div class="descriptor">' + path + '<br />' + this.width + 'x' + this.height + '</div></div>');
+			$('#sidebar').append('<div id="listElement"><img width="50" src="'+fullPath+'" onclick="select(\'' + (levels.blockURLs.length - 1) + '\')"></img><div class="descriptor">' + path + '<br />' + this.width + 'x' + this.height + '</div></div>');
 		else if (this.height >= this.width) {
-			$('#sidebar').append('<div id="listElement"><img height="50" src="'+fullPath+'" onclick="select(\'' + (blockURLs.length - 1) + '\')"></img><div class="descriptor">' + path + '<br />' + this.width + 'x' + this.height + '</div></div>');
+			$('#sidebar').append('<div id="listElement"><img height="50" src="'+fullPath+'" onclick="select(\'' + (levels.blockURLs.length - 1) + '\')"></img><div class="descriptor">' + path + '<br />' + this.width + 'x' + this.height + '</div></div>');
 		}
 	}
 }
@@ -43,6 +43,42 @@ function select(path) {
 	console.log(path);
 }
 
+function newLevel() {
+	var cellSize = $('#cellSize').val();
+	var height = $('#height').val();
+	var width = $('#width').val();
+	levels.push(new Level({cellSize: cellSize, height: height, width: width}));
+	$('#levelSelect').append('<option value="' + (levels.length - 1) + '">Level ' + levels.length + '</option>');
+	$.modal.close();
+}
+
+function selectLevel() {
+	var selection = $('#levelSelect').val();
+	if (selection == 'new') {
+		$('#newLevelInput').modal({overlayClose:true});
+	} else {
+		levels.currLevel = selection;
+		console.log(levels[levels.currLevel]);
+	}
+}
+
+function Level(options) {
+	this.height = options.height;
+	this.width = options.width;
+	this.cellSize = options.cellSize;
+	this.blocks = [];
+	this.events = [];
+	
+	this.build = function() {
+		this.spriteList = new jaws.SpriteList();
+		for (i in this.blocks) {
+			for (j in this.blocks[i]) {
+				if (this.blocks[i][j] != 0)
+					this.spriteList.push(new jaws.Sprite({image:this.blockURLs[this.blocks[i][j]-1],x:j*this.cellSize, y:i*this.cellSize}));
+			}
+		}
+	}
+}
 
 //var height = 20;
 //var width = 30;
