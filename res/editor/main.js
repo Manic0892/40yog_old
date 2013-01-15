@@ -17,27 +17,12 @@ window.onload = function() {
 	stage.setDraggable(true);
 	layer = new Kinetic.Layer();
 	stage.getContainer().addEventListener('mousedown', function(evt) {
-		//var newImage = new Kinetic.Image({
-		//	y: j/levels[levels.currLevel].cellSize,
-		//	x: i/levels[levels.currLevel].cellSize,
-		//	image: images[levels[levels.currLevel].blocks[i][j]]
-		//});
-		//layer.add(newImage);
-		console.log('here');
-		console.log(stage.getMousePosition().x, stage.getMousePosition().y);
-		console.log(layer.getX(), layer.getY());
-		console.log(stage.getX(), stage.getY());
-		var imgnew = new Image();
-		imgnew.src = 'res/img/block.png';
-		imgnew.onload = function() {
-			var newimg = new Kinetic.Image ({
-				x: (stage.getMousePosition().x - stage.getX())/layer.getScale().x,
-				y: (stage.getMousePosition().y - stage.getY())/layer.getScale().y,
-				image: imgnew
-			});
-			layer.add(newimg);
-			stage.draw();
-		}
+		var x = (stage.getMousePosition().x - stage.getX())/layer.getScale().x;
+		var y = (stage.getMousePosition().y - stage.getY())/layer.getScale().y;
+		x = Math.floor(x/levels[levels.currLevel].cellSize);
+		y = Math.floor(y/levels[levels.currLevel].cellSize);
+		levels[levels.currLevel].blocks[x][y] = parseInt(selected);
+		drawLevel();
 	});
 	stage.add(layer);
 	stage.draw();
@@ -94,10 +79,14 @@ function drawLevel() {
 	}
 	for (i in levels[levels.currLevel].blocks) {
 		for (j in levels[levels.currLevel].blocks[i]) {
-			if (typeof(levels[levels.currLevel].blocks[i][j]) == Number) {
+			console.log('here');
+			if (typeof(levels[levels.currLevel].blocks[i][j]) != 'string')
+				console.log(typeof(levels[levels.currLevel].blocks[i][j]));
+			if (typeof(levels[levels.currLevel].blocks[i][j]) == 'number') {
+				console.log('here2');
 				var newImage = new Kinetic.Image({
-					y: j/levels[levels.currLevel].cellSize,
-					x: i/levels[levels.currLevel].cellSize,
+					y: j*levels[levels.currLevel].cellSize,
+					x: i*levels[levels.currLevel].cellSize,
 					image: images[levels[levels.currLevel].blocks[i][j]]
 				});
 				layer.add(newImage);
@@ -108,6 +97,7 @@ function drawLevel() {
 }
 
 function select(path) {
+	selected=path;
 	console.log(path);
 }
 
