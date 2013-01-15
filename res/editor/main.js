@@ -4,6 +4,7 @@ var selected = '';
 
 var levels = [];
 levels.blockURLs = [];
+var images = [];
 levels.currLevel;
 var blockNum;
 
@@ -15,12 +16,45 @@ window.onload = function() {
 	});
 	stage.setDraggable(true);
 	layer = new Kinetic.Layer();
+	stage.getContainer().addEventListener('mousedown', function(evt) {
+		//var newImage = new Kinetic.Image({
+		//	y: j/levels[levels.currLevel].cellSize,
+		//	x: i/levels[levels.currLevel].cellSize,
+		//	image: images[levels[levels.currLevel].blocks[i][j]]
+		//});
+		//layer.add(newImage);
+		console.log('here');
+		console.log(stage.getMousePosition().x, stage.getMousePosition().y);
+		console.log(layer.getX(), layer.getY());
+		console.log(stage.getX(), stage.getY());
+		var imgnew = new Image();
+		imgnew.src = 'res/img/block.png';
+		imgnew.onload = function() {
+			var newimg = new Kinetic.Image ({
+				x: (stage.getMousePosition().x - stage.getX())/layer.getScale().x,
+				y: (stage.getMousePosition().y - stage.getY())/layer.getScale().y,
+				image: imgnew
+			});
+			layer.add(newimg);
+			stage.draw();
+		}
+	});
 	stage.add(layer);
 	stage.draw();
 	var path = 'res/img/null.png';
 	$('#sidebar').append('<div id="listElement"><img height="50" src="'+path+'" onclick="select(\'X\')"></img><div class="descriptor">Delete<br />0x0</div></div>');
 	path = 'res/img/placeholder.png';
 	$('#sidebar').append('<div id="listElement"><img height="50" src="'+path+'" onclick="select(\'P\')"></img><div class="descriptor">Player<br />0x0</div></div>');
+	var zoom = function(e) {
+		if (stage.getMousePosition()) {
+			var zoomAmount = e.wheelDeltaY*0.001;
+			if (layer.getScale().x+zoomAmount > 0)
+				layer.setScale(layer.getScale().x+zoomAmount)
+			layer.draw();
+		}
+	}
+	
+	document.addEventListener("mousewheel", zoom, false);
 }
 
 function addNewBlock() {
@@ -29,6 +63,7 @@ function addNewBlock() {
 	fullPath = ('res/img/') + path;
 	var img = new Image();
 	img.src = fullPath;
+	images.push(img);
 	img.onload = function() {
 		levels.blockURLs.push(fullPath);
 		if (this.width > this.height)
@@ -37,6 +72,39 @@ function addNewBlock() {
 			$('#sidebar').append('<div id="listElement"><img height="50" src="'+fullPath+'" onclick="select(\'' + (levels.blockURLs.length - 1) + '\')"></img><div class="descriptor">' + path + '<br />' + this.width + 'x' + this.height + '</div></div>');
 		}
 	}
+}
+
+function drawLevel() {
+	layer.removeChildren();
+	for (var i = 0; i <= levels[levels.currLevel].width; i++) {
+		var newLine = new Kinetic.Line({
+			points: [i*levels[levels.currLevel].cellSize, 0, i*levels[levels.currLevel].cellSize, levels[levels.currLevel].height*levels[levels.currLevel].cellSize],
+			stroke: 'black',
+			strokeWidth: 2
+		});
+		layer.add(newLine);
+	}
+	for (var i = 0; i <= levels[levels.currLevel].height; i++) {
+		var newLine = new Kinetic.Line({
+			points: [0, i*levels[levels.currLevel].cellSize, levels[levels.currLevel].width*levels[levels.currLevel].cellSize, i*levels[levels.currLevel].cellSize],
+			stroke: 'black',
+			strokeWidth: 2
+		});
+		layer.add(newLine);
+	}
+	for (i in levels[levels.currLevel].blocks) {
+		for (j in levels[levels.currLevel].blocks[i]) {
+			if (typeof(levels[levels.currLevel].blocks[i][j]) == Number) {
+				var newImage = new Kinetic.Image({
+					y: j/levels[levels.currLevel].cellSize,
+					x: i/levels[levels.currLevel].cellSize,
+					image: images[levels[levels.currLevel].blocks[i][j]]
+				});
+				layer.add(newImage);
+			}
+		}
+	}
+	stage.draw();
 }
 
 function select(path) {
@@ -49,6 +117,8 @@ function newLevel() {
 	var width = $('#width').val();
 	levels.push(new Level({cellSize: cellSize, height: height, width: width}));
 	$('#levelSelect').append('<option value="' + (levels.length - 1) + '">Level ' + levels.length + '</option>');
+	levels.currLevel = levels.length-1;
+	drawLevel();
 	$.modal.close();
 }
 
@@ -58,7 +128,7 @@ function selectLevel() {
 		$('#newLevelInput').modal({overlayClose:true});
 	} else {
 		levels.currLevel = selection;
-		console.log(levels[levels.currLevel]);
+		drawLevel();
 	}
 }
 
@@ -68,6 +138,13 @@ function Level(options) {
 	this.cellSize = options.cellSize;
 	this.blocks = [];
 	this.events = [];
+	
+	for (var i = 0; i < options.height; i++) {
+		this.blocks[i] = [];
+		for (var j = 0; j < options.width; j++) {
+			this.blocks[i][j] = 'X';
+		}
+	}
 	
 	this.build = function() {
 		this.spriteList = new jaws.SpriteList();
