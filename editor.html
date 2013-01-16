@@ -40,6 +40,10 @@
 				<button type='button' onclick='selectLevel();'>Load Level</button>
 			</form>
 			<form>
+				<button type='button' onclick='importLevels();'>Import Levels</button><br />
+				<button type='button' onclick='exportLevels();'>Export Levels</button>
+			</form>
+			<form>
 				<input id='inFile' type='file' value='.' />
 				<button type='button' onclick='addNewBlock()'>Add block</button>
 				<hr />
@@ -52,6 +56,13 @@
 				<input type='number' value='0' id='width'>Width</input><br />
 				<button type='button' style='float:right' onclick='newLevel();'>Create Level</button>
 			</form>
+		</div>
+		<div id='importedLevelInput' style='display: none;'>
+				<textarea id='importArea' cols=75 rows=25></textarea><br />
+				<button onclick='importFinish();'>Import Level</button>
+		</div>
+		<div id='exportedLevelOutput' style='display: none;'>
+			<textarea id='exportArea' cols=75 rows=25></textarea>
 		</div>
 	</body>
 </html>
