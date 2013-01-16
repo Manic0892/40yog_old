@@ -7,6 +7,8 @@ levels.blockURLs = [];
 var images = [];
 levels.currLevel;
 var blockNum;
+var player = new Image();
+player.src = 'res/img/player.png';
 
 window.onload = function() {
 	stage = new Kinetic.Stage({
@@ -21,14 +23,24 @@ window.onload = function() {
 		var y = (stage.getMousePosition().y - stage.getY())/layer.getScale().y;
 		x = Math.floor(x/levels[levels.currLevel].cellSize);
 		y = Math.floor(y/levels[levels.currLevel].cellSize);
-		levels[levels.currLevel].blocks[x][y] = parseInt(selected);
+		console.log(y, levels[levels.currLevel].blocks.length);
+		console.log(x, levels[levels.currLevel].blocks[y].length);
+		if (!isNaN(parseInt(selected))) {
+			levels[levels.currLevel].blocks[y][x] = parseInt(selected);
+		}
+		else if (selected == '') {}
+		else {
+			levels[levels.currLevel].blocks[y][x] = selected;
+		}
 		drawLevel();
 	});
 	stage.add(layer);
 	stage.draw();
-	var path = 'res/img/null.png';
+	var path = 'res/img/cursor.png';
+	$('#sidebar').append('<div id="listElement"><img height="50" src="'+path+'" onclick="select(\'\')"></img><div class="descriptor">Cursor<br />0x0</div></div>');
+	path = 'res/img/null.png';
 	$('#sidebar').append('<div id="listElement"><img height="50" src="'+path+'" onclick="select(\'X\')"></img><div class="descriptor">Delete<br />0x0</div></div>');
-	path = 'res/img/placeholder.png';
+	path = 'res/img/player.png';
 	$('#sidebar').append('<div id="listElement"><img height="50" src="'+path+'" onclick="select(\'P\')"></img><div class="descriptor">Player<br />0x0</div></div>');
 	var zoom = function(e) {
 		if (stage.getMousePosition()) {
@@ -79,14 +91,17 @@ function drawLevel() {
 	}
 	for (i in levels[levels.currLevel].blocks) {
 		for (j in levels[levels.currLevel].blocks[i]) {
-			console.log('here');
-			if (typeof(levels[levels.currLevel].blocks[i][j]) != 'string')
-				console.log(typeof(levels[levels.currLevel].blocks[i][j]));
-			if (typeof(levels[levels.currLevel].blocks[i][j]) == 'number') {
-				console.log('here2');
+			if (levels[levels.currLevel].blocks[i][j] == 'P') {
 				var newImage = new Kinetic.Image({
-					y: j*levels[levels.currLevel].cellSize,
-					x: i*levels[levels.currLevel].cellSize,
+					y: i*levels[levels.currLevel].cellSize,
+					x: j*levels[levels.currLevel].cellSize,
+					image: player
+				});
+				layer.add(newImage);
+			} else if (typeof(levels[levels.currLevel].blocks[i][j]) == 'number') {
+				var newImage = new Kinetic.Image({
+					y: i*levels[levels.currLevel].cellSize,
+					x: j*levels[levels.currLevel].cellSize,
 					image: images[levels[levels.currLevel].blocks[i][j]]
 				});
 				layer.add(newImage);
@@ -129,9 +144,9 @@ function Level(options) {
 	this.blocks = [];
 	this.events = [];
 	
-	for (var i = 0; i < options.height; i++) {
+	for (var i = 0; i < this.height; i++) {
 		this.blocks[i] = [];
-		for (var j = 0; j < options.width; j++) {
+		for (var j = 0; j < this.width; j++) {
 			this.blocks[i][j] = 'X';
 		}
 	}
