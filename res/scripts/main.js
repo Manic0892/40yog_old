@@ -11,5 +11,4 @@ window.onload = function() {
 	for (i in levels.lvls) {
 		states.push(new State(buildLevel(levels.lvls[i])));
 	}
-	
 }

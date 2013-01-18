@@ -12,6 +12,8 @@ function State(level) {
 			}
 		}
 		this.gravity = .4;
+		this.tileMap = new jaws.TileMap({size: [this.level.blocks[0].length, this.level.blocks.length], cell_size: [this.level.cellSize, this.level.cellSize]});
+		this.tileMap.push(this.level.spriteList);
 	}
 	this.update = function() {
 		for (i in this.level.events) {
@@ -19,6 +21,17 @@ function State(level) {
 				this.level.events[i].exec();
 			}
 		}
+		player.setImage( player.anim_default.next() )
+		
+		player.vx = 0
+		if(jaws.pressed("left"))  { player.vx = -2; player.setImage(player.anim_left.next()) }
+		if(jaws.pressed("right")) { player.vx = 2;  player.setImage(player.anim_right.next()) }
+		if(jaws.pressed("up"))    { if(player.can_jump) { player.vy = -10; player.can_jump = false } }
+		
+		// some gravity
+		player.vy += 0.4
+		
+		// apply vx / vy (x velocity / y velocity), check for collision detection in the process.
 		player.move(this);
 	}
 	this.draw = function() {
@@ -31,7 +44,7 @@ function State(level) {
 
 function Player() {
 	var playerAnim = new jaws.Animation({sprite_sheet: "res/img/dummy.png", orientation:'right', frame_size: [32,64], frame_duration: 100});
-	this.__proto__ = new jaws.Sprite({x:100, y:100, scale: 1});
+	this.__proto__ = new jaws.Sprite({x:100, y:100, scale: 1, anchor:'center_bottom'});
 	this.anim_default = playerAnim.slice(0,3);
 	this.anim_left = playerAnim.slice(3,5);
 	this.anim_right = playerAnim.slice(5,7);
@@ -39,35 +52,58 @@ function Player() {
 	this.arm = new Arm(this);
 	this.vy = 0;
 	this.vx = 0;
+	this.can_jump = true;
 	this.move = function(state) {
-		this.vy += state.gravity;
-		
+		//this.vy += state.gravity;
+		//
+		//this.setImage(this.anim_default.next());
+		//
+		//if(jaws.pressed("left")) {
+		//	this.vx -= .3;
+		//	this.setImage(this.anim_left.next());
+		//};
+		//if(jaws.pressed("right")) {
+		//	this.vx += .3;
+		//	this.setImage(this.anim_right.next());
+		//};
+		//if(jaws.pressed("up")) {
+		//	this.vy = -5;
+		//	this.setImage(this.anim_up.next());
+		//};
+		//if(jaws.pressed("down")) {
+		//	this.vy = 5;
+		//	this.setImage(this.anim_default.next());
+		//};
+		//
+		//this.x += this.vx;
+		//this.y += this.vy;
+		//
+		//this.arm.x = this.x+this.width/2;
+		//this.arm.y = this.y+this.height/2+10;
+		//var angle = Math.atan2(jaws.mouse_y - this.arm.y, jaws.mouse_x - this.arm.x);
+		//this.arm.rotateTo(angle*(180/Math.PI));
 		this.setImage(this.anim_default.next());
 		
-		if(jaws.pressed("left")) {
-			this.vx -= .3;
-			this.setImage(this.anim_left.next());
-		};
-		if(jaws.pressed("right")) {
-			this.vx += .3;
-			this.setImage(this.anim_right.next());
-		};
-		if(jaws.pressed("up")) {
-			this.vy = -5;
-			this.setImage(this.anim_up.next());
-		};
-		if(jaws.pressed("down")) {
-			this.vy = 5;
-			this.setImage(this.anim_default.next());
-		};
+		this.x += this.vx
+		if(state.tileMap.atRect(this.rect()).length > 0) { 
+			this.x -= this.vx 
+		}
+		this.vx = 0
 		
-		this.x += this.vx;
-		this.y += this.vy;
-		
-		this.arm.x = this.x+this.width/2;
-		this.arm.y = this.y+this.height/2+10;
-		var angle = Math.atan2(jaws.mouse_y - this.arm.y, jaws.mouse_x - this.arm.x);
-		this.arm.rotateTo(angle*(180/Math.PI));
+		this.y += this.vy
+		var block = state.tileMap.atRect(this.rect())[0]
+		if(block) { 
+		// Heading downwards
+		if(this.vy > 0) { 
+		this.can_jump = true 
+		this.y = block.rect().y - 1
+		}
+		// Heading upwards (jumping)
+		else if(this.vy < 0) {
+		this.y = block.rect().bottom + this.height
+		}
+		this.vy = 0
+		}
 	}
 }
 
