@@ -162,7 +162,7 @@ function Level(options) {
 		for (i in this.blocks) {
 			for (j in this.blocks[i]) {
 				if (this.blocks[i][j] != 0)
-					this.spriteList.push(new jaws.Sprite({image:this.blockURLs[this.blocks[i][j]-1],x:j*this.cellSize, y:i*this.cellSize}));
+					this.spriteList.push(new jaws.Sprite({image:levels.blockURLs[this.blocks[i][j]-1],x:j*this.cellSize, y:i*this.cellSize}));
 			}
 		}
 	}

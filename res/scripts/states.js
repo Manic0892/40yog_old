@@ -40,7 +40,3 @@ var menuState = new function() {
 
 states.push(menuState);
 states.index = 0;
-
-for (i in levels) {
-	states.push(new State(levels[i]));
-}
