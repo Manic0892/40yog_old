@@ -14,6 +14,9 @@ function State(level) {
 		this.gravity = .4;
 		this.tileMap = new jaws.TileMap({size: [this.level.blocks[0].length, this.level.blocks.length], cell_size: [this.level.cellSize, this.level.cellSize]});
 		this.tileMap.push(this.level.spriteList);
+		this.width = this.level.blocks[0].length * this.level.cellSize;
+		this.height = this.level.blocks.length * this.level.cellSize;
+		this.viewport = new jaws.Viewport({max_x: this.width, max_y: this.height});
 	}
 	this.update = function() {
 		for (i in this.level.events) {
@@ -21,25 +24,24 @@ function State(level) {
 				this.level.events[i].exec();
 			}
 		}
-		player.setImage( player.anim_default.next() )
-		
-		player.vx = 0
-		if(jaws.pressed("left"))  { player.vx = -2; player.setImage(player.anim_left.next()) }
-		if(jaws.pressed("right")) { player.vx = 2;  player.setImage(player.anim_right.next()) }
-		if(jaws.pressed("up"))    { if(player.can_jump) { player.vy = -10; player.can_jump = false } }
-		
-		// some gravity
-		player.vy += 0.4
-		
-		// apply vx / vy (x velocity / y velocity), check for collision detection in the process.
 		player.move(this);
+		this.viewport.centerAround(player);
 	}
 	this.draw = function() {
 		jaws.clear();
-		this.level.spriteList.draw();
-		player.draw();
-		player.arm.draw();
+		var state = this;
+		this.viewport.apply(function() {
+			state.level.spriteList.draw();
+			player.draw();
+			player.arm.draw();
+		});
+		
+		console.log(jaws.game_loop.fps);
 	}
+}
+
+function applyViewport(state) {
+	
 }
 
 function Player() {
@@ -52,8 +54,17 @@ function Player() {
 	this.arm = new Arm(this);
 	this.vy = 0;
 	this.vx = 0;
-	this.can_jump = true;
+	this.canJump = false;
 	this.move = function(state) {
+		this.setImage( this.anim_default.next() )
+		
+		this.vx = 0
+		if(jaws.pressed("left"))  { this.vx = -4; this.setImage(this.anim_left.next()) }
+		if(jaws.pressed("right")) { this.vx = 4;  this.setImage(this.anim_right.next()) }
+		if(jaws.pressed("up"))    { if(this.canJump) { this.vy = -10; this.canJump = false } }
+		
+		// some gravity
+		this.vy += 0.4
 		//this.vy += state.gravity;
 		//
 		//this.setImage(this.anim_default.next());
@@ -78,10 +89,7 @@ function Player() {
 		//this.x += this.vx;
 		//this.y += this.vy;
 		//
-		//this.arm.x = this.x+this.width/2;
-		//this.arm.y = this.y+this.height/2+10;
-		//var angle = Math.atan2(jaws.mouse_y - this.arm.y, jaws.mouse_x - this.arm.x);
-		//this.arm.rotateTo(angle*(180/Math.PI));
+		
 		this.setImage(this.anim_default.next());
 		
 		this.x += this.vx
@@ -95,7 +103,7 @@ function Player() {
 		if(block) { 
 		// Heading downwards
 		if(this.vy > 0) { 
-		this.can_jump = true 
+		this.canJump = true 
 		this.y = block.rect().y - 1
 		}
 		// Heading upwards (jumping)
@@ -104,6 +112,10 @@ function Player() {
 		}
 		this.vy = 0
 		}
+		this.arm.x = this.x;
+		this.arm.y = this.y-this.height/2+10;
+		var angle = Math.atan2(jaws.mouse_y - this.arm.y, jaws.mouse_x - this.arm.x);
+		this.arm.rotateTo(angle*(180/Math.PI));
 	}
 }
 
