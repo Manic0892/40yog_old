@@ -1,4 +1,3 @@
-
 function buildLevel(lvl) {
 	lvl.spriteList = new jaws.SpriteList();
 	for (i in lvl.blocks) {
