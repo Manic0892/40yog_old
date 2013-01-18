@@ -9,7 +9,7 @@ var images = [];
 levels.currLevel;
 var blockNum;
 var player = new Image();
-player.src = 'res/img/player.png';
+player.src = 'res/editor/img/player.png';
 
 window.onload = function() {
 	stage = new Kinetic.Stage({
@@ -36,11 +36,11 @@ window.onload = function() {
 	});
 	stage.add(layer);
 	stage.draw();
-	var path = 'res/img/cursor.png';
+	var path = 'res/editor/img/cursor.png';
 	$('#sidebar').append('<div id="listElement"><img height="50" src="'+path+'" onclick="select(\'\')"></img><div class="descriptor">Cursor<br />0x0</div></div>');
-	path = 'res/img/null.png';
+	path = 'res/editor/img/null.png';
 	$('#sidebar').append('<div id="listElement"><img height="50" src="'+path+'" onclick="select(\'X\')"></img><div class="descriptor">Delete<br />0x0</div></div>');
-	path = 'res/img/player.png';
+	path = 'res/editor/img/player.png';
 	$('#sidebar').append('<div id="listElement"><img height="50" src="'+path+'" onclick="select(\'P\')"></img><div class="descriptor">Player<br />0x0</div></div>');
 	var zoom = function(e) {
 		if (stage.getMousePosition()) {
@@ -57,7 +57,7 @@ window.onload = function() {
 function addNewBlock() {
 	var path = $('#inFile').val();
 	path = path.replace("C:\\fakepath\\", "");
-	fullPath = ('res/img/') + path;
+	fullPath = ('res/img/blocks/') + path;
 	var img = new Image();
 	img.src = fullPath;
 	images.push(img);

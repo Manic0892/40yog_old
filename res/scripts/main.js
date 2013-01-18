@@ -1,7 +1,7 @@
 window.onload = function() {
 	var assetList = [];
-	assetList.push('res/img/dummy.png');
-	assetList.push('res/img/arm.png');
+	assetList.push('res/img/sprites/dummy.png');
+	assetList.push('res/img/sprites/arm.png');
 	for (var j in levels.blockURLs)
 		assetList.push(levels.blockURLs[j]);
 	jaws.assets.add(assetList);

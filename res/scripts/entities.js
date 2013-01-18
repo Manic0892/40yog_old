@@ -35,8 +35,6 @@ function State(level) {
 			player.draw();
 			player.arm.draw();
 		});
-		
-		console.log(jaws.game_loop.fps);
 	}
 }
 
@@ -45,7 +43,7 @@ function applyViewport(state) {
 }
 
 function Player() {
-	var playerAnim = new jaws.Animation({sprite_sheet: "res/img/dummy.png", orientation:'right', frame_size: [32,64], frame_duration: 100});
+	var playerAnim = new jaws.Animation({sprite_sheet: "res/img/sprites/dummy.png", orientation:'right', frame_size: [32,64], frame_duration: 100});
 	this.__proto__ = new jaws.Sprite({x:100, y:100, scale: 1, anchor:'center_bottom'});
 	this.anim_default = playerAnim.slice(0,3);
 	this.anim_left = playerAnim.slice(3,5);
@@ -114,13 +112,13 @@ function Player() {
 		}
 		this.arm.x = this.x;
 		this.arm.y = this.y-this.height/2+10;
-		var angle = Math.atan2(jaws.mouse_y - this.arm.y, jaws.mouse_x - this.arm.x);
-		this.arm.rotateTo(angle*(180/Math.PI));
+		var angle = Math.atan2(jaws.mouse_y - this.arm.y + state.viewport.y, jaws.mouse_x - this.arm.x + state.viewport.x);
+		this.arm.rotateTo(angle*180/Math.PI);
 	}
 }
 
 function Arm(player) {
-	 this.__proto__ = new jaws.Sprite({image: 'res/img/arm.png', x:player.x+player.width/2, y:player.y+player.height/2, scale:1, anchor:'left_center'});
+	 this.__proto__ = new jaws.Sprite({image: 'res/img/sprites/arm.png', x:player.x+player.width/2, y:player.y+player.height/2, scale:1, anchor:'left_center'});
 }
 
 function event(options) {
