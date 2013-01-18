@@ -1,8 +1,9 @@
 var stage;
 var layer;
 var selected = '';
-
-var levels = [];
+var blockURLsiterator;
+var levels = {};
+levels.lvls = [];
 levels.blockURLs = [];
 var images = [];
 levels.currLevel;
@@ -21,17 +22,17 @@ window.onload = function() {
 	stage.getContainer().addEventListener('mousedown', function(evt) {
 		var x = (stage.getMousePosition().x - stage.getX())/layer.getScale().x;
 		var y = (stage.getMousePosition().y - stage.getY())/layer.getScale().y;
-		x = Math.floor(x/levels[levels.currLevel].cellSize);
-		y = Math.floor(y/levels[levels.currLevel].cellSize);
+		x = Math.floor(x/levels.lvls[levels.currLevel].cellSize);
+		y = Math.floor(y/levels.lvls[levels.currLevel].cellSize);
 		//console.log(y, levels[levels.currLevel].blocks.length);
 		//console.log(x, levels[levels.currLevel].blocks[y].length);
-		if (y >= 0 && y < levels[levels.currLevel].blocks.length && x >= 0 && x < levels[levels.currLevel].blocks[y].length)
+		if (y >= 0 && y < levels.lvls[levels.currLevel].blocks.length && x >= 0 && x < levels.lvls[levels.currLevel].blocks[y].length)
 		if (!isNaN(parseInt(selected))) {
-			levels[levels.currLevel].blocks[y][x] = parseInt(selected);
+			levels.lvls[levels.currLevel].blocks[y][x] = parseInt(selected);
 		}
 		else if (selected == '') {}
 		else {
-			levels[levels.currLevel].blocks[y][x] = selected;
+			levels.lvls[levels.currLevel].blocks[y][x] = selected;
 		}
 		drawLevel();
 	});
@@ -74,40 +75,43 @@ function addNewBlock() {
 
 function drawLevel() {
 	layer.removeChildren();
-	for (var i = 0; i <= levels[levels.currLevel].width; i++) {
+	for (var i = 0; i <= levels.lvls[levels.currLevel].width; i++) {
 		var newLine = new Kinetic.Line({
-			points: [i*levels[levels.currLevel].cellSize, 0, i*levels[levels.currLevel].cellSize, levels[levels.currLevel].height*levels[levels.currLevel].cellSize],
+			points: [i*levels.lvls[levels.currLevel].cellSize, 0, i*levels.lvls[levels.currLevel].cellSize, levels.lvls[levels.currLevel].height*levels.lvls[levels.currLevel].cellSize],
 			stroke: 'black',
 			strokeWidth: 2
 		});
 		layer.add(newLine);
 	}
-	for (var i = 0; i <= levels[levels.currLevel].height; i++) {
+	for (var i = 0; i <= levels.lvls[levels.currLevel].height; i++) {
 		var newLine = new Kinetic.Line({
-			points: [0, i*levels[levels.currLevel].cellSize, levels[levels.currLevel].width*levels[levels.currLevel].cellSize, i*levels[levels.currLevel].cellSize],
+			points: [0, i*levels.lvls[levels.currLevel].cellSize, levels.lvls[levels.currLevel].width*levels.lvls[levels.currLevel].cellSize, i*levels.lvls[levels.currLevel].cellSize],
 			stroke: 'black',
 			strokeWidth: 2
 		});
 		layer.add(newLine);
 	}
-	for (i in levels[levels.currLevel].blocks) {
-		for (j in levels[levels.currLevel].blocks[i]) {
-			if (levels[levels.currLevel].blocks[i][j] == 'P') {
+	for (i in levels.lvls[levels.currLevel].blocks) {
+		for (j in levels.lvls[levels.currLevel].blocks[i]) {
+			if (levels.lvls[levels.currLevel].blocks[i][j] == 'P') {
 				var newImage = new Kinetic.Image({
-					y: i*levels[levels.currLevel].cellSize,
-					x: j*levels[levels.currLevel].cellSize,
+					y: i*levels.lvls[levels.currLevel].cellSize,
+					x: j*levels.lvls[levels.currLevel].cellSize,
 					image: player,
-					height:levels[levels.currLevel].cellSize*2,
-					width:levels[levels.currLevel].cellSize
+					height:levels.lvls[levels.currLevel].cellSize*2,
+					width:levels.lvls[levels.currLevel].cellSize
 				});
 				layer.add(newImage);
-			} else if (typeof(levels[levels.currLevel].blocks[i][j]) == 'number') {
+			} else if (typeof(levels.lvls[levels.currLevel].blocks[i][j]) == 'number') {
+				console.log(levels.lvls[levels.currLevel].blocks[i][j]);
 				var newImage = new Kinetic.Image({
-					y: i*levels[levels.currLevel].cellSize,
-					x: j*levels[levels.currLevel].cellSize,
-					image: images[levels[levels.currLevel].blocks[i][j]]
+					y: i*levels.lvls[levels.currLevel].cellSize,
+					x: j*levels.lvls[levels.currLevel].cellSize,
+					image: images[levels.lvls[levels.currLevel].blocks[i][j]]
 				});
 				layer.add(newImage);
+			} else {
+				console.log('vomit');
 			}
 		}
 	}
@@ -126,9 +130,9 @@ function newLevel() {
 	var cellSize = $('#cellSize').val();
 	var height = $('#height').val();
 	var width = $('#width').val();
-	levels.push(new Level({cellSize: cellSize, height: height, width: width}));
-	$('#levelSelect').append('<option value="' + (levels.length - 1) + '">Level ' + levels.length + '</option>');
-	levels.currLevel = levels.length-1;
+	levels.lvls.push(new Level({cellSize: cellSize, height: height, width: width}));
+	$('#levelSelect').append('<option value="' + (levels.lvls.length - 1) + '">Level ' + levels.lvls.length + '</option>');
+	levels.currLevel = levels.lvls.length-1;
 	drawLevel();
 	$.modal.close();
 }
@@ -185,7 +189,28 @@ function importFinish() {
 	levels.currLevel = 0;
 	$.modal.close();
 	$('#levelSelect').html('<option value="new">New level</option>');
-	for (var i = 0; i < levels.length; i++)
+	for (var i = 0; i < levels.lvls.length; i++)
 		$('#levelSelect').append('<option value="' + (i) + '">Level ' + (i+1) + '</option>');
-	drawLevel();
+	blockURLsiterator = 0;
+	var img = new Image();
+	img.src = levels.blockURLs[blockURLsiterator];
+	images.push(img);
+	img.onload = imgOnLoad(img);
+}
+
+function imgOnLoad(img) {
+	if (img.width > img.height)
+		$('#sidebar').append('<div id="listElement"><img width="50" src="'+levels.blockURLs[blockURLsiterator]+'" onclick="select(\'' + (blockURLsiterator) + '\')"></img><div class="descriptor">' + levels.blockURLs[blockURLsiterator].split('/')[levels.blockURLs[blockURLsiterator].split('/').length - 1] + '<br />' + img.width + 'x' + img.height + '</div></div>');
+	else if (img.height >= img.width) {
+		$('#sidebar').append('<div id="listElement"><img height="50" src="'+levels.blockURLs[blockURLsiterator]+'" onclick="select(\'' + (blockURLsiterator) + '\')"></img><div class="descriptor">' + levels.blockURLs[blockURLsiterator].split('/')[levels.blockURLs[blockURLsiterator].split('/').length - 1] + '<br />' + img.width + 'x' + img.height + '</div></div>');
+	}
+	if (blockURLsiterator < levels.blockURLs.length-1) {
+		blockURLsiterator++;
+		img = new Image();
+		img.src = levels.blockURLs[blockURLsiterator];
+		images.push(img);
+		img.onload = new imgOnLoad(img);
+	} else {
+		drawLevel();
+	}
 }
