@@ -24,8 +24,6 @@ window.onload = function() {
 		var y = (stage.getMousePosition().y - stage.getY())/layer.getScale().y;
 		x = Math.floor(x/levels.lvls[levels.currLevel].cellSize);
 		y = Math.floor(y/levels.lvls[levels.currLevel].cellSize);
-		//console.log(y, levels[levels.currLevel].blocks.length);
-		//console.log(x, levels[levels.currLevel].blocks[y].length);
 		if (y >= 0 && y < levels.lvls[levels.currLevel].blocks.length && x >= 0 && x < levels.lvls[levels.currLevel].blocks[y].length)
 		if (!isNaN(parseInt(selected))) {
 			levels.lvls[levels.currLevel].blocks[y][x] = parseInt(selected);
@@ -103,7 +101,6 @@ function drawLevel() {
 				});
 				layer.add(newImage);
 			} else if (typeof(levels.lvls[levels.currLevel].blocks[i][j]) == 'number') {
-				console.log(levels.lvls[levels.currLevel].blocks[i][j]);
 				var newImage = new Kinetic.Image({
 					y: i*levels.lvls[levels.currLevel].cellSize,
 					x: j*levels.lvls[levels.currLevel].cellSize,
@@ -111,7 +108,6 @@ function drawLevel() {
 				});
 				layer.add(newImage);
 			} else {
-				console.log('vomit');
 			}
 		}
 	}
@@ -183,7 +179,6 @@ function importLevels() {
 }
 
 function importFinish() {
-	console.log('dafux');
 	var imported = $('#importArea').val();
 	levels = JSON.parse(imported);
 	levels.currLevel = 0;
