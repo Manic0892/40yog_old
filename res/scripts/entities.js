@@ -114,7 +114,7 @@ function Player() {
 		this.arm.x = this.x;
 		this.arm.y = this.y-this.height/2+10;
 		var angle = Math.atan2(jaws.mouse_y - this.arm.y + state.viewport.y, jaws.mouse_x - this.arm.x + state.viewport.x);
-		this.arm.rotateTo(angle*180/Math.PI);
+		this.arm.rotateTo(angle*(180/Math.PI));
 	}
 }
 
