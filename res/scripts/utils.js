@@ -18,6 +18,10 @@ function isOutsideLevel(entity) {
 	}
 }
 
-function isHittingTilemap(item) {
-	return (jaws.game_state.tileMap.atRect(item.rect()).length > 0);
+function isHittingTilemap(entity) {
+	return (jaws.game_state.tileMap.atRect(entity.rect()).length > 0);
+}
+
+function collides(entity1, entity2) {
+	return (entity1.collideRect(entity2.rect()));
 }

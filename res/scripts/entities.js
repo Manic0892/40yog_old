@@ -64,9 +64,9 @@ function Player() {
 		this.setImage( this.anim_default.next() )
 		
 		this.vx = 0
-		if(jaws.pressed("left"))  { this.vx = -4; this.setImage(this.anim_left.next()) }
-		if(jaws.pressed("right")) { this.vx = 4;  this.setImage(this.anim_right.next()) }
-		if(jaws.pressed("up"))    { if(this.canJump) { this.vy = -10; this.canJump = false } }
+		if(jaws.pressed("left") || jaws.pressed('a'))  { this.vx = -4; this.setImage(this.anim_left.next()) }
+		if(jaws.pressed("right") || jaws.pressed('d')) { this.vx = 4;  this.setImage(this.anim_right.next()) }
+		if(jaws.pressed("up") || jaws.pressed('w'))    { if(this.canJump) { this.vy = -15; this.canJump = false } }
 		if(jaws.pressed('left_mouse_button')) {
 			if (this.canFire){
 				var newBullet = new Bullet(this.arm.x, this.arm.y, state);
