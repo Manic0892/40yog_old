@@ -29,6 +29,7 @@ function State(level) {
 		this.viewport.centerAround(player);
 		this.bullets.update();
 		this.bullets.removeIf(isOutsideLevel);
+		this.bullets.removeIf(isHittingTilemap);
 	}
 	this.draw = function() {
 		jaws.clear();

@@ -17,3 +17,7 @@ function isOutsideLevel(entity) {
 		return false;
 	}
 }
+
+function isHittingTilemap(item) {
+	return (jaws.game_state.tileMap.atRect(item.rect()).length > 0);
+}
