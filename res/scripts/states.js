@@ -3,40 +3,52 @@ var states = [];
 var menuState = new function() {
 	this.setup = function() {
 		this.items = ['Start', 'Settings', 'Levels'];
-		this.selected = 0;
-		this.fontsize = 150;
-		this.initoffset = 150;
-		this.spacing = this.fontsize;
+		for (i in this.items) {
+			var newText = new Kinetic.Text({
+				x: 100,
+				y: 100*i+20*i+10,
+				text: this.items[i],
+				fontSize: 100,
+				fontFamily: 'Calibri',
+				fill: '#555',
+				width: 380,
+				align: 'center'
+			});
+			var newRect = new Kinetic.Rect({
+				x: 100,
+				y: 100*i+20*i+10,
+				 stroke: '#555',
+				strokeWidth: 5,
+				fill: '#ddd',
+				width: newText.getWidth(),
+				height: newText.getHeight(),
+				shadowColor: 'black',
+				shadowBlur: 10,
+				shadowOffset: [10, 10],
+				shadowOpacity: 0.2,
+				cornerRadius: 10
+			});
+			newText.choice = this.items[i];
+			newText.on('click', function() {
+				if (this.choice == 'Start') {
+					states.index++;
+					jaws.switchGameState(states[states.index]);
+			       }
+			})
+			layer.add(newRect);
+			layer.add(newText);
+		}
 	}
 	this.update = function() {
-		//var mousex = jaws.mouse_x;
-		var mousey = jaws.mouse_y;
-		var elements = this.items.length;
-		var selection = Math.floor(mousey/(this.spacing/*+(this.initoffset-this.fontsize)*/));
-		//console.log(Math.ceil(selection));
-		if (selection < 0)
-			selection = 0;
-		else if (selection > this.items.length-1)
-			selection = this.items.length-1;
-		this.selected = selection;
-		if (jaws.pressed('left_mouse_button')) {
-			if (this.selected == 0)
-				jaws.switchGameState(states[states.index++]);
-		}
 	}
 	this.draw = function() {
 		jaws.clear();
-		for(var i=0; this.items[i]; i++) {
-			jaws.context.font = 'bold ' + this.fontsize + 'pt impact';
-			jaws.context.lineWidth = 10;
-			jaws.context.fillStyle =  (i == this.selected) ? "Red" : "Black";
-			jaws.context.strokeStyle =  "rgba(200,200,200,0.0)";
-			jaws.context.fillText(this.items[i], 30, this.initoffset + i * this.spacing);
-		}
+		stage.draw();
 	}
 }
 
 
-
-states.push(menuState);
-states.index = 0;
+function setupStates() {
+	states.push(menuState);
+	states.index = 0;
+}
