@@ -9,3 +9,11 @@ function buildLevel(lvl) {
 	}
 	return lvl;
 }
+
+function isOutsideLevel(entity) {
+	if (entity.x < 0 || entity.y < 0 || entity.x > jaws.game_state.viewport.max_x || entity.y > jaws.game_state.viewport.max_y) {
+		return true;
+	} else {
+		return false;
+	}
+}

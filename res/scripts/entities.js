@@ -28,6 +28,7 @@ function State(level) {
 		player.move(this);
 		this.viewport.centerAround(player);
 		this.bullets.update();
+		this.bullets.removeIf(isOutsideLevel);
 	}
 	this.draw = function() {
 		jaws.clear();
@@ -38,6 +39,7 @@ function State(level) {
 			player.draw();
 			player.arm.draw();
 		});
+		console.log(this.bullets.length);
 	}
 }
 
@@ -70,7 +72,6 @@ function Player() {
 				state.bullets.push(newBullet);
 				this.canFire = false;
 				window.setTimeout(function() {
-					console.log('here');
 					player.canFire = true;
 				}, 200);
 				//state.bullets.push(new )
