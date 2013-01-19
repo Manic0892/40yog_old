@@ -31,6 +31,7 @@ var menuState = new function() {
 			newText.choice = this.items[i];
 			newText.on('click', function() {
 				if (this.choice == 'Start') {
+					cleanupLayer();
 					states.index++;
 					jaws.switchGameState(states[states.index]);
 			       }

@@ -9,3 +9,7 @@ function buildLevel(lvl) {
 	}
 	return lvl;
 }
+
+function cleanupLayer() {
+	layer.removeChildren();
+}
