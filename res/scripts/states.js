@@ -15,7 +15,6 @@ var menuState = new function() {
 		var mousey = jaws.mouse_y;
 		var elements = this.items.length;
 		var selection = Math.floor((mousey-this.initoffset+this.spacing)/(this.spacing));
-		console.log(selection);
 		//console.log(Math.ceil(selection));
 		if (selection < 0)
 			selection = 0;
@@ -33,8 +32,8 @@ var menuState = new function() {
 		for(var i=0; this.items[i]; i++) {
 			jaws.context.font = 'bold ' + this.fontsize + 'pt impact';
 			jaws.context.lineWidth = 10;
-			jaws.context.fillStyle =  (i == this.selected) ? "Red" : "Black";
-			jaws.context.strokeStyle =  "rgba(200,200,200,0.0)";
+			jaws.context.fillStyle =  (i == this.selected) ? 'Red' : 'Black';
+			jaws.context.strokeStyle =  'rgba(200,200,200,0.0)';
 			jaws.context.fillText(this.items[i], 650, this.initoffset + i * this.spacing);
 		}
 	}

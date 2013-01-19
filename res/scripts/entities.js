@@ -17,6 +17,7 @@ function State(level) {
 		this.width = this.level.blocks[0].length * this.level.cellSize;
 		this.height = this.level.blocks.length * this.level.cellSize;
 		this.viewport = new jaws.Viewport({max_x: this.width, max_y: this.height});
+		this.bullets = new jaws.SpriteList();
 	}
 	this.update = function() {
 		for (i in this.level.events) {
@@ -26,12 +27,14 @@ function State(level) {
 		}
 		player.move(this);
 		this.viewport.centerAround(player);
+		this.bullets.update();
 	}
 	this.draw = function() {
 		jaws.clear();
 		var state = this;
 		this.viewport.apply(function() {
 			state.level.spriteList.draw();
+			state.bullets.draw();
 			player.draw();
 			player.arm.draw();
 		});
@@ -53,6 +56,7 @@ function Player() {
 	this.vy = 0;
 	this.vx = 0;
 	this.canJump = false;
+	this.canFire = true;
 	this.move = function(state) {
 		this.setImage( this.anim_default.next() )
 		
@@ -60,6 +64,20 @@ function Player() {
 		if(jaws.pressed("left"))  { this.vx = -4; this.setImage(this.anim_left.next()) }
 		if(jaws.pressed("right")) { this.vx = 4;  this.setImage(this.anim_right.next()) }
 		if(jaws.pressed("up"))    { if(this.canJump) { this.vy = -10; this.canJump = false } }
+		if(jaws.pressed('left_mouse_button')) {
+			if (this.canFire){
+				var newBullet = new Bullet(this.arm.x, this.arm.y, state);
+				state.bullets.push(newBullet);
+				this.canFire = false;
+				window.setTimeout(function() {
+					console.log('here');
+					player.canFire = true;
+				}, 200);
+				//state.bullets.push(new )
+				
+				//var newBullet = new Sprite({x:this.arm.x; y:this.arm.y});
+			}
+		}
 		
 		// some gravity
 		this.vy += 0.4
@@ -117,6 +135,33 @@ function Player() {
 
 function Arm(player) {
 	 this.__proto__ = new jaws.Sprite({image: 'res/img/sprites/arm.png', x:player.x+player.width/2, y:player.y+player.height/2, scale:1, anchor:'left_center'});
+}
+
+function Bullet(x, y, state) {
+	this.__proto__ = new jaws.Sprite({image:'res/img/sprites/bullet.png', x:x, y:y});
+	var angle = Math.atan2(jaws.mouse_y - player.arm.y + state.viewport.y, jaws.mouse_x - player.arm.x + state.viewport.x);
+	this.rotateTo(angle*(180/Math.PI));
+	this.dx = jaws.mouse_x+state.viewport.x - x;
+        this.dy  = jaws.mouse_y+state.viewport.y - y;
+        this.dx /= 10;
+        this.dy /= 10;
+	var vectorLength = Math.sqrt(this.dx*this.dx + this.dy*this.dy);
+        this.dx /= vectorLength;
+        this.dy /= vectorLength;
+        this.dx *= 20;
+        this.dy *= 20;
+        //this.x = x;
+        //this.y = y;
+        this.rectangle = new jaws.Rect(this.x,this.y,10,5);
+	
+	this.update = function() {
+		this.x += this.dx;
+                this.y += this.dy;
+                this.rectangle = new jaws.Rect(this.x,this.y,10,10);
+	}
+	this.rect = function() {
+                return this.rectangle;
+        }
 }
 
 function event(options) {
