@@ -35,7 +35,6 @@ function State(level) {
 			player.draw();
 			player.arm.draw();
 		});
-		//console.log(jaws.game_loop.fps);
 	}
 }
 
@@ -89,7 +88,7 @@ function Player() {
 		//this.y += this.vy;
 		//
 		
-		//this.setImage(this.anim_default.next());
+		this.setImage(this.anim_default.next());
 		
 		this.x += this.vx
 		if(state.tileMap.atRect(this.rect()).length > 0) { 
@@ -116,10 +115,6 @@ function Player() {
 		var angle = Math.atan2(jaws.mouse_y - this.arm.y + state.viewport.y, jaws.mouse_x - this.arm.x + state.viewport.x);
 		this.arm.rotateTo(angle*180/Math.PI);
 	}
-}
-
-function NPC() {
-	
 }
 
 function Arm(player) {
