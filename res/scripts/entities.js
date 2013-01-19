@@ -88,8 +88,6 @@ function Player() {
 		//this.y += this.vy;
 		//
 		
-		this.setImage(this.anim_default.next());
-		
 		this.x += this.vx
 		if(state.tileMap.atRect(this.rect()).length > 0) { 
 			this.x -= this.vx 
