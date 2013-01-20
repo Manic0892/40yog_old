@@ -18,6 +18,17 @@ function isOutsideLevel(entity) {
 	}
 }
 
+function isHittingBullet(entity) {
+	var colliding = false;
+	if (jaws.game_state.bulletMap.atRect(entity.rect()).length > 0) {
+		for (i in jaws.game_state.bulletMap.atRect(entity.rect())) {
+			if (jaws.game_state.bulletMap.atRect(entity.rect())[i].rect().collideRect(entity.rect()))
+				colliding = true;
+		}
+	}
+	return colliding;
+}
+
 function isHittingTile(entity) {
 	var colliding = false;
 	if(jaws.game_state.tileMap.atRect(entity.rect()).length > 0) {
