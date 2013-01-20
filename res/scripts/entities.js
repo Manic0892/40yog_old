@@ -14,7 +14,6 @@ function State(level) {
 		this.gravity = 0.4;
 		this.tileMap = new jaws.TileMap({size: [this.level.blocks[0].length, this.level.blocks.length], cell_size: [this.level.cellSize, this.level.cellSize]});
 		this.tileMap.push(this.level.spriteList);
-		this.bulletMap = new jaws.TileMap({size: [this.level.blocks[0].length, this.level.blocks.length], cell_size: [this.level.cellSize, this.level.cellSize]});
 		this.width = this.level.blocks[0].length * this.level.cellSize;
 		this.height = this.level.blocks.length * this.level.cellSize;
 		this.viewport = new jaws.Viewport({max_x: this.width, max_y: this.height});
@@ -23,7 +22,6 @@ function State(level) {
 		this.enemies.push(new Enemy1('res/img/sprites/enemy1.png',625,6360));
 	}
 	this.update = function() {
-		this.bulletMap.clear();
 		for (i in this.level.events) {
 			if (this.level.events[i].trig()) {
 				this.level.events[i].exec();
@@ -35,8 +33,12 @@ function State(level) {
 		this.enemies.update();
 		this.bullets.removeIf(isOutsideLevel);
 		this.bullets.removeIf(isHittingTile);
-		this.bulletMap.push(this.bullets);
-		this.enemies.removeIf(isHittingBullet);
+		//this.enemies.forEach(function(entity) {
+		//	if (isHittingBullet(entity)) {
+		//		entity.health--;
+		//		console.log(entity.health);
+		//	}
+		//});
 	}
 	this.draw = function() {
 		jaws.clear();
@@ -55,6 +57,7 @@ function NPC(img, x, y) {
 	this.__proto__ = new jaws.Sprite({x:x, y:y, image: img, anchor: 'center_bottom'});
 	this.direction = -1;
 	this.speed = 2;
+	this.health = 3;
 	this.update = function() {
 		var state = jaws.game_state;
 		this.x += this.speed*this.direction;
@@ -170,6 +173,7 @@ function Bullet(x, y, state) {
         this.dx *= 20;
         this.dy *= 20;
         this.rectangle = new jaws.Rect(this.x,this.y,10,5);
+	this.toRemove = false;
 	
 	this.update = function() {
 		this.x += this.dx;
