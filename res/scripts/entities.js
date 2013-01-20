@@ -18,6 +18,8 @@ function State(level) {
 		this.height = this.level.blocks.length * this.level.cellSize;
 		this.viewport = new jaws.Viewport({max_x: this.width, max_y: this.height});
 		this.bullets = new jaws.SpriteList();
+		this.enemies = new jaws.SpriteList();
+		this.enemies.push(new Enemy1('res/img/sprites/enemy1.png',625,6360));
 	}
 	this.update = function() {
 		for (i in this.level.events) {
@@ -28,6 +30,7 @@ function State(level) {
 		player.move(this);
 		this.viewport.centerAround(player);
 		this.bullets.update();
+		this.enemies.update();
 		this.bullets.removeIf(isOutsideLevel);
 		this.bullets.removeIf(isHittingTile);
 	}
@@ -37,15 +40,34 @@ function State(level) {
 		this.viewport.apply(function() {
 			state.level.spriteList.draw();
 			state.bullets.draw();
+			state.enemies.draw();
 			player.draw();
 			player.arm.draw();
 		});
-		console.log(this.bullets.length);
 	}
 }
 
-function applyViewport(state) {
-	
+function NPC(img, x, y) {
+	this.__proto__ = new jaws.Sprite({x:x, y:y, image: img, anchor: 'center_bottom'});
+	this.direction = -1;
+	this.speed = 2;
+	this.update = function() {
+		var state = jaws.game_state;
+		this.x += this.speed*this.direction;
+		if (state.tileMap.atRect(this.rect()).length > 0) {
+			var colliding = false;
+			for (i in state.tileMap.atRect(this.rect())) {
+				if (state.tileMap.atRect(this.rect())[i].rect().collideRect(this.rect()))
+					colliding = true;
+			}
+			if (colliding)
+				this.direction *= -1;
+		}
+	}
+}
+
+function Enemy1(img,x,y) {
+	this.__proto__ = new NPC(img,x,y);
 }
 
 function Player() {
