@@ -11,7 +11,7 @@ function State(level) {
 				}
 			}
 		}
-		this.gravity = .4;
+		this.gravity = 0.4;
 		this.tileMap = new jaws.TileMap({size: [this.level.blocks[0].length, this.level.blocks.length], cell_size: [this.level.cellSize, this.level.cellSize]});
 		this.tileMap.push(this.level.spriteList);
 		this.width = this.level.blocks[0].length * this.level.cellSize;
@@ -29,7 +29,7 @@ function State(level) {
 		this.viewport.centerAround(player);
 		this.bullets.update();
 		this.bullets.removeIf(isOutsideLevel);
-		this.bullets.removeIf(isHittingTilemap);
+		this.bullets.removeIf(isHittingTile);
 	}
 	this.draw = function() {
 		jaws.clear();
@@ -51,82 +51,73 @@ function applyViewport(state) {
 function Player() {
 	var playerAnim = new jaws.Animation({sprite_sheet: "res/img/sprites/dummy.png", orientation:'right', frame_size: [32,64], frame_duration: 100});
 	this.__proto__ = new jaws.Sprite({x:100, y:100, scale: 1, anchor:'center_bottom'});
-	this.anim_default = playerAnim.slice(0,3);
-	this.anim_left = playerAnim.slice(3,5);
-	this.anim_right = playerAnim.slice(5,7);
-	this.anim_up = playerAnim.slice(7,9);
+	this.animDefault = playerAnim.slice(0,3);
+	this.animLeft = playerAnim.slice(3,5);
+	this.animRight = playerAnim.slice(5,7);
+	this.animUp = playerAnim.slice(7,9);
 	this.arm = new Arm(this);
 	this.vy = 0;
 	this.vx = 0;
 	this.canJump = false;
 	this.canFire = true;
 	this.move = function(state) {
-		this.setImage( this.anim_default.next() )
+		this.setImage(this.animDefault.next());
 		
-		this.vx = 0
-		if(jaws.pressed("left") || jaws.pressed('a'))  { this.vx = -4; this.setImage(this.anim_left.next()) }
-		if(jaws.pressed("right") || jaws.pressed('d')) { this.vx = 4;  this.setImage(this.anim_right.next()) }
-		if(jaws.pressed("up") || jaws.pressed('w'))    { if(this.canJump) { this.vy = -15; this.canJump = false } }
+		this.vx = 0;
+		if(jaws.pressed("left") || jaws.pressed('a')) {
+			this.vx = -4;
+			this.setImage(this.animLeft.next());
+		}
+		if(jaws.pressed("right") || jaws.pressed('d')) {
+			this.vx = 4;
+			this.setImage(this.animRight.next());
+		}
+		if(jaws.pressed("up") || jaws.pressed('w')) {
+			if(this.canJump) {
+				this.vy = -15;
+				this.canJump = false;
+			}
+		}
 		if(jaws.pressed('left_mouse_button')) {
-			if (this.canFire){
+			if (this.canFire) {
 				var newBullet = new Bullet(this.arm.x, this.arm.y, state);
 				state.bullets.push(newBullet);
 				this.canFire = false;
 				window.setTimeout(function() {
 					player.canFire = true;
 				}, 200);
-				//state.bullets.push(new )
-				
-				//var newBullet = new Sprite({x:this.arm.x; y:this.arm.y});
 			}
 		}
 		
-		// some gravity
-		this.vy += 0.4
-		//this.vy += state.gravity;
-		//
-		//this.setImage(this.anim_default.next());
-		//
-		//if(jaws.pressed("left")) {
-		//	this.vx -= .3;
-		//	this.setImage(this.anim_left.next());
-		//};
-		//if(jaws.pressed("right")) {
-		//	this.vx += .3;
-		//	this.setImage(this.anim_right.next());
-		//};
-		//if(jaws.pressed("up")) {
-		//	this.vy = -5;
-		//	this.setImage(this.anim_up.next());
-		//};
-		//if(jaws.pressed("down")) {
-		//	this.vy = 5;
-		//	this.setImage(this.anim_default.next());
-		//};
-		//
-		//this.x += this.vx;
-		//this.y += this.vy;
-		//
+		this.vy += state.gravity;
 		
-		this.x += this.vx
-		if(state.tileMap.atRect(this.rect()).length > 0) { 
-			this.x -= this.vx 
-		}
-		this.vx = 0
+		this.x += this.vx;
 		
-		this.y += this.vy
-		var block = state.tileMap.atRect(this.rect())[0]
-		if(block) { 
-		// Heading downwards
-		if(this.vy > 0) { 
-		this.canJump = true 
-		this.y = block.rect().y - 1
+		if (state.tileMap.atRect(this.rect()).length > 0) {
+			var colliding = false;
+			for (i in state.tileMap.atRect(this.rect())) {
+				if (state.tileMap.atRect(this.rect())[i].rect().collideRect(this.rect()))
+					colliding = true;
+			}
+			if (colliding)
+				this.x -= this.vx;
 		}
-		// Heading upwards (jumping)
-		else if(this.vy < 0) {
-		this.y = block.rect().bottom + this.height
-		}
-		this.vy = 0
+		this.vx = 0;
+		
+		this.y += this.vy;
+		
+		var block = state.tileMap.atRect(this.rect())[0];
+		if (block) {
+			// Heading downwards
+			if (this.vy > 0) { 
+				this.canJump = true;
+				this.y = block.rect().y - 1;
+			}
+			// Heading upwards (jumping)
+			else if (this.vy < 0) {
+				this.y = block.rect().bottom + this.height;
+			}
+			this.vy = 0;
 		}
 		this.arm.x = this.x;
 		this.arm.y = this.y-this.height/2+10;
@@ -152,8 +143,6 @@ function Bullet(x, y, state) {
         this.dy /= vectorLength;
         this.dx *= 20;
         this.dy *= 20;
-        //this.x = x;
-        //this.y = y;
         this.rectangle = new jaws.Rect(this.x,this.y,10,5);
 	
 	this.update = function() {
