@@ -44,6 +44,8 @@ function State(level) {
 			}
 		});
 		this.enemies.removeIf(toRemoval);
+		this.parallax.camera_x = this.viewport.x;
+		this.parallax.camera_y = this.viewport.y;
 	}
 	this.draw = function() {
 		jaws.clear();
@@ -166,8 +168,6 @@ function Player() {
 		this.arm.y = this.y-this.height/2+10;
 		var angle = Math.atan2(jaws.mouse_y - this.arm.y + state.viewport.y, jaws.mouse_x - this.arm.x + state.viewport.x);
 		this.arm.rotateTo(angle*180/Math.PI);
-		state.parallax.camera_x = this.x;
-		state.parallax.camera_y = this.y;
 	}
 }
 
