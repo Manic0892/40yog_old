@@ -33,12 +33,15 @@ function State(level) {
 		this.enemies.update();
 		this.bullets.removeIf(isOutsideLevel);
 		this.bullets.removeIf(isHittingTile);
-		//this.enemies.forEach(function(entity) {
-		//	if (isHittingBullet(entity)) {
-		//		entity.health--;
-		//		console.log(entity.health);
-		//	}
-		//});
+		this.bullets.removeIf(toRemoval);
+		this.enemies.forEach(function(entity) {
+			if (isHittingBullet(entity)) {
+				entity.health--;
+				if (entity.health <= 0)
+					entity.toRemove = true;
+			}
+		});
+		this.enemies.removeIf(toRemoval);
 	}
 	this.draw = function() {
 		jaws.clear();
@@ -58,6 +61,7 @@ function NPC(img, x, y) {
 	this.direction = -1;
 	this.speed = 2;
 	this.health = 3;
+	this.toRemove = false;
 	this.update = function() {
 		var state = jaws.game_state;
 		this.x += this.speed*this.direction;
@@ -79,7 +83,7 @@ function Enemy1(img,x,y) {
 
 function Player() {
 	var playerAnim = new jaws.Animation({sprite_sheet: "res/img/sprites/dummy.png", orientation:'right', frame_size: [32,64], frame_duration: 100});
-	this.__proto__ = new jaws.Sprite({x:100, y:100, scale: 1, anchor:'center_bottom'});
+	this.__proto__ = new jaws.Sprite({x:100, y:100, scale: .8, anchor:'center_bottom'});
 	this.animDefault = playerAnim.slice(0,3);
 	this.animLeft = playerAnim.slice(3,5);
 	this.animRight = playerAnim.slice(5,7);

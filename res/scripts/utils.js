@@ -18,6 +18,17 @@ function isOutsideLevel(entity) {
 	}
 }
 
+function isHittingBullet(entity) {
+	var colliding = false;
+	jaws.game_state.bullets.forEach(function(bullet) {
+		if (bullet.rect().collideRect(entity.rect())) {
+			colliding = true;
+			bullet.toRemove = true;
+		}
+	});
+	return colliding;
+}
+
 function isHittingTile(entity) {
 	var colliding = false;
 	if(jaws.game_state.tileMap.atRect(entity.rect()).length > 0) {
@@ -31,6 +42,10 @@ function isHittingTile(entity) {
 
 function isHittingTilemap(entity) {
 	return (jaws.game_state.tileMap.atRect(entity.rect()).length > 0);
+}
+
+function toRemoval(entity) {
+	return entity.toRemove;
 }
 
 function collides(entity1, entity2) {
