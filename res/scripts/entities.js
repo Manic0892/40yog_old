@@ -20,6 +20,8 @@ function State(level) {
 		this.bullets = new jaws.SpriteList();
 		this.enemies = new jaws.SpriteList();
 		this.enemies.push(new Enemy1('res/img/sprites/enemy1.png',625,6360));
+		this.parallax = new jaws.Parallax({repeat_x: true, repeat_y: true});
+		this.parallax.addLayer({image: "res/img/misc/l1bg.png", damping: 2});
 	}
 	this.update = function() {
 		for (i in this.level.events) {
@@ -46,7 +48,9 @@ function State(level) {
 	this.draw = function() {
 		jaws.clear();
 		var state = this;
+		state.parallax.draw();
 		this.viewport.apply(function() {
+			
 			state.level.spriteList.draw();
 			state.bullets.draw();
 			state.enemies.draw();
@@ -162,6 +166,8 @@ function Player() {
 		this.arm.y = this.y-this.height/2+10;
 		var angle = Math.atan2(jaws.mouse_y - this.arm.y + state.viewport.y, jaws.mouse_x - this.arm.x + state.viewport.x);
 		this.arm.rotateTo(angle*180/Math.PI);
+		state.parallax.camera_x = this.x;
+		state.parallax.camer_y = this.y;
 	}
 }
 
