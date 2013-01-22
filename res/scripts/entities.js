@@ -167,7 +167,7 @@ function Player() {
 		var angle = Math.atan2(jaws.mouse_y - this.arm.y + state.viewport.y, jaws.mouse_x - this.arm.x + state.viewport.x);
 		this.arm.rotateTo(angle*180/Math.PI);
 		state.parallax.camera_x = this.x;
-		state.parallax.camer_y = this.y;
+		state.parallax.camera_y = this.y;
 	}
 }
 
