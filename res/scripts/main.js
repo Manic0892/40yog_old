@@ -5,6 +5,7 @@ window.onload = function() {
 	assetList.push('res/img/sprites/bullet.png');
 	assetList.push('res/img/misc/menu2.jpg');
 	assetList.push('res/img/sprites/enemy1.png');
+	assetList.push('res/snd/gun.wav');
 	for (var j in levels.blockURLs)
 		assetList.push(levels.blockURLs[j]);
 	jaws.assets.add(assetList);

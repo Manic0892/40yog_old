@@ -92,7 +92,10 @@ function Player() {
 	this.vy = 0;
 	this.vx = 0;
 	this.canJump = false;
-	this.canFire = true;
+	this.canFire = false;
+	window.setTimeout(function() {
+		player.canFire = true;
+	}, 200);
 	this.move = function(state) {
 		this.setImage(this.animDefault.next());
 		
@@ -119,6 +122,9 @@ function Player() {
 				window.setTimeout(function() {
 					player.canFire = true;
 				}, 200);
+				var gunshot = new buzz.sound('res/snd/gun.wav');
+				gunshot.setVolume(5);
+				gunshot.play();
 			}
 		}
 		
