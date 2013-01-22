@@ -19,7 +19,7 @@ function State(level) {
 		this.viewport = new jaws.Viewport({max_x: this.width, max_y: this.height});
 		this.bullets = new jaws.SpriteList();
 		this.enemies = new jaws.SpriteList();
-		this.enemies.push(new Enemy1('res/img/sprites/enemy1.png',625,6360));
+		this.enemies.push(new Enemy1('res/img/sprites/enemy1.png',776,607));
 		this.parallax = new jaws.Parallax({repeat_x: true, repeat_y: true});
 		this.parallax.addLayer({image: "res/img/misc/l1bg.png", damping: 2});
 	}
