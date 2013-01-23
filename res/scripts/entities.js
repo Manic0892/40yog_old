@@ -20,8 +20,11 @@ function State(level) {
 		this.bullets = new jaws.SpriteList();
 		this.enemies = new jaws.SpriteList();
 		this.enemies.push(new Enemy1('res/img/sprites/enemy1.png',1008, 6367));
-		this.parallax = new jaws.Parallax({repeat_x: true, repeat_y: true});
-		this.parallax.addLayer({image: "res/img/misc/l1bg.png", damping: 2});
+		this.enemies.push(new Enemy1('res/img/sprites/enemy1.png', 1316, 5823.4));
+		this.parallax1 = new jaws.Parallax({repeat_x: true, repeat_y: true});
+		this.parallax1.addLayer({image: "res/img/misc/sky1.png", damping: 2});
+		this.parallax2 = new jaws.Parallax({repeat_x: true});
+		this.parallax2.addLayer({image: "res/img/misc/hill1.png", damping:2});
 		this.emitters = new jaws.SpriteList();
 	}
 	this.update = function() {
@@ -53,13 +56,16 @@ function State(level) {
 		this.emitters.removeIf(particleLengthIsZero);
 		this.emitters.update();
 		this.enemies.removeIf(toRemoval);
-		this.parallax.camera_x = this.viewport.x;
-		this.parallax.camera_y = this.viewport.y;
+		this.parallax1.camera_x = this.viewport.x;
+		this.parallax1.camera_y = this.viewport.y;
+		this.parallax2.camera_x = this.viewport.x;
+		this.parallax2.camera_y = this.viewport.y-5900;
 	}
 	this.draw = function() {
 		jaws.clear();
 		var state = this;
-		state.parallax.draw();
+		this.parallax1.draw();
+		this.parallax2.draw();
 		this.viewport.apply(function() {
 			state.level.spriteList.draw();
 			state.bullets.draw();
@@ -195,8 +201,8 @@ function Bullet(x, y, state) {
 	var vectorLength = Math.sqrt(this.dx*this.dx + this.dy*this.dy);
         this.dx /= vectorLength;
         this.dy /= vectorLength;
-        this.dx *= 20;
-        this.dy *= 20;
+        this.dx *= 30;
+        this.dy *= 30;
         this.rectangle = new jaws.Rect(this.x,this.y,10,5);
 	this.hitEnemy = false;
 	this.toRemove = false;
@@ -221,8 +227,8 @@ function BloodEmitter(x,y,dx,dy) {
 	for (var i = 0; i < 50; i++) {
 		//var particleDX = ((Math.random()*2)-1) + (this.dx/40);
 		//var particleDY = ((Math.random()*1.2)-.6) + (this.dy/40);
-		var particleDX = ((Math.random()*(this.dx/this.dx))-.5)/2 + (this.dx/20);
-		var particleDY = ((Math.random()*(this.dy/this.dy))-.5)/2 + (this.dy/20);
+		var particleDX = ((Math.random()*(this.dx/this.dx))-.5)/2 + (this.dx/5);
+		var particleDY = ((Math.random()*(this.dy/this.dy))-.5)/2 + (this.dy/5);
 		this.particles.push(new BloodParticle(x,y,particleDX, particleDY, .03));
 	}
 }
@@ -239,7 +245,7 @@ function BloodParticle(x,y,dx,dy, gravity) {
 		this.dy += this.gravity;
 		this.x += this.dx;
 		this.y += this.dy;
-		this.a -= .02;
+		this.a -= .04;
 		if (this.a < 0)
 			this.a = 0;
 	}
