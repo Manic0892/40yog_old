@@ -22,6 +22,7 @@ function State(level) {
 		this.enemies.push(new Enemy1('res/img/sprites/enemy1.png',1008, 6367));
 		this.parallax = new jaws.Parallax({repeat_x: true, repeat_y: true});
 		this.parallax.addLayer({image: "res/img/misc/l1bg.png", damping: 2});
+		this.emitters = new jaws.SpriteList();
 	}
 	this.update = function() {
 		for (i in this.level.events) {
@@ -39,10 +40,17 @@ function State(level) {
 		this.enemies.forEach(function(entity) {
 			if (isHittingBullet(entity)) {
 				entity.health--;
-				if (entity.health <= 0)
+				if (entity.health <= 0) {
 					entity.toRemove = true;
+				}
 			}
 		});
+		this.bullets.forEach(function(bullet) {
+			if (bullet.hitEnemy) {
+				jaws.game_state.emitters.push(new BloodEmitter(bullet.x, bullet.y, bullet.dx, bullet.dy));
+			}
+		});
+		this.emitters.update();
 		this.enemies.removeIf(toRemoval);
 		this.parallax.camera_x = this.viewport.x;
 		this.parallax.camera_y = this.viewport.y;
@@ -52,12 +60,12 @@ function State(level) {
 		var state = this;
 		state.parallax.draw();
 		this.viewport.apply(function() {
-			
 			state.level.spriteList.draw();
 			state.bullets.draw();
 			state.enemies.draw();
 			player.draw();
 			player.arm.draw();
+			state.emitters.draw();
 		});
 	}
 }
@@ -189,6 +197,7 @@ function Bullet(x, y, state) {
         this.dx *= 20;
         this.dy *= 20;
         this.rectangle = new jaws.Rect(this.x,this.y,10,5);
+	this.hitEnemy = false;
 	this.toRemove = false;
 	
 	this.update = function() {
@@ -204,4 +213,72 @@ function Bullet(x, y, state) {
 function event(options) {
 	this.trig = options.trig;
 	this.exec = options.exec;
+}
+
+function BloodEmitter(x,y,dx,dy) {
+	this.__proto__ = new Emitter(x,y,dx,dy);
+	for (var i = 0; i < 50; i++) {
+		//var particleDX = ((Math.random()*2)-1) + (this.dx/40);
+		//var particleDY = ((Math.random()*1.2)-.6) + (this.dy/40);
+		var particleDX = ((Math.random()*(this.dx/this.dx))-.5)/2 + (this.dx/20);
+		var particleDY = ((Math.random()*(this.dy/this.dy))-.5)/2 + (this.dy/20);
+		this.particles.push(new BloodParticle(x,y,particleDX, particleDY, .03));
+	}
+}
+
+function BloodParticle(x,y,dx,dy, gravity) {
+	this.__proto__ = new Particle(x,y,dx,dy);
+	this.r = 255;
+	this.g = 0;
+	this.b = 0;
+	this.a = 1;
+	this.gravity = gravity;
+	this.size = Math.floor(Math.random()*5);
+	this.update = function() {
+		this.dy += this.gravity;
+		this.x += this.dx;
+		this.y += this.dy;
+		this.a -= .02;
+		if (this.a < 0)
+			this.a = 0;
+	}
+}
+
+function Emitter(x,y,dx,dy) {
+	this.x = x;
+	this.y = y;
+	this.dx = dx;
+	this.dy = dy;
+	this.particles = new jaws.SpriteList();
+	this.update = function() {
+		this.particles.update();
+		this.particles.removeIf(isInvis);
+	}
+	this.draw = function() {
+		this.particles.draw();
+	}
+}
+
+function Particle(x,y,dx,dy) {
+	this.r;
+	this.g;
+	this.b;
+	this.a;
+	this.age = 0;
+	this.size = 10;
+	this.x = x;
+	this.y = y;
+	this.dx = dx;
+	this.dy = dy;
+	this.update = function() {
+		this.x += this.dx;
+		this.y += this.dy;
+		this.age++;
+	}
+	this.draw = function() {
+		jaws.context.beginPath();
+		jaws.context.arc(this.x, this.y, this.size, 0, Math.PI*2, true);
+		jaws.context.fillStyle = 'rgba(' + this.r + ',' + this.g + ',' + this.b + ',' + this.a + ')';
+		jaws.context.fill();
+	}
 }

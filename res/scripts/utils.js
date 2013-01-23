@@ -24,6 +24,7 @@ function isHittingBullet(entity) {
 		if (bullet.rect().collideRect(entity.rect())) {
 			colliding = true;
 			bullet.toRemove = true;
+			bullet.hitEnemy = true;
 		}
 	});
 	return colliding;
@@ -40,8 +41,16 @@ function isHittingTile(entity) {
 	return colliding;
 }
 
+function isInvis(entity) {
+	return entity.a <= 0;
+}
+
 function isHittingTilemap(entity) {
 	return (jaws.game_state.tileMap.atRect(entity.rect()).length > 0);
+}
+
+function hitEnemy(entity) {
+	return entity.hitEnemy;
 }
 
 function toRemoval(entity) {
