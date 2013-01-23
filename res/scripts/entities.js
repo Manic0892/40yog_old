@@ -59,7 +59,7 @@ function State(level) {
 		this.parallax1.camera_x = this.viewport.x;
 		this.parallax1.camera_y = this.viewport.y;
 		this.parallax2.camera_x = this.viewport.x;
-		this.parallax2.camera_y = this.viewport.y-5900;
+		this.parallax2.camera_y = this.viewport.y-6000;
 	}
 	this.draw = function() {
 		jaws.clear();
@@ -142,7 +142,7 @@ function Player() {
 				this.canFire = false;
 				window.setTimeout(function() {
 					player.canFire = true;
-				}, 200);
+				}, 1000);
 				var gunshot = new buzz.sound('res/snd/gun.wav');
 				gunshot.setVolume(5);
 				gunshot.play();
@@ -245,7 +245,7 @@ function BloodParticle(x,y,dx,dy, gravity) {
 		this.dy += this.gravity;
 		this.x += this.dx;
 		this.y += this.dy;
-		this.a -= .04;
+		this.a -= .025;
 		if (this.a < 0)
 			this.a = 0;
 	}
