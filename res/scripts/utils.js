@@ -57,6 +57,10 @@ function toRemoval(entity) {
 	return entity.toRemove;
 }
 
+function particleLengthIsZero(entity) {
+	return entity.particles.length == 0;
+}
+
 function collides(entity1, entity2) {
 	return (entity1.collideRect(entity2.rect()));
 }

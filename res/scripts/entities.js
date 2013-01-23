@@ -50,6 +50,7 @@ function State(level) {
 				jaws.game_state.emitters.push(new BloodEmitter(bullet.x, bullet.y, bullet.dx, bullet.dy));
 			}
 		});
+		this.emitters.removeIf(particleLengthIsZero);
 		this.emitters.update();
 		this.enemies.removeIf(toRemoval);
 		this.parallax.camera_x = this.viewport.x;
