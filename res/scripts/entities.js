@@ -19,8 +19,8 @@ function State(level) {
 		this.viewport = new jaws.Viewport({max_x: this.width, max_y: this.height});
 		this.bullets = new jaws.SpriteList();
 		this.enemies = new jaws.SpriteList();
-		this.enemies.push(new Enemy1('res/img/sprites/enemy1.png',1008, 6367));
-		this.enemies.push(new Enemy1('res/img/sprites/enemy1.png', 1316, 5823.4));
+		//this.enemies.push(new Enemy1('res/img/sprites/enemy1.png',1008, 6367));
+		//this.enemies.push(new Enemy1('res/img/sprites/enemy1.png', 1316, 5823.4));
 		this.parallax1 = new jaws.Parallax({repeat_x: true, repeat_y: true});
 		this.parallax1.addLayer({image: "res/img/misc/sky1.png", damping: 2});
 		this.parallax2 = new jaws.Parallax({repeat_x: true});
@@ -103,17 +103,18 @@ function Enemy1(img,x,y) {
 }
 
 function Player() {
-	var playerAnim = new jaws.Animation({sprite_sheet: "res/img/sprites/dummy.png", orientation:'right', frame_size: [32,64], frame_duration: 100});
-	this.__proto__ = new jaws.Sprite({x:100, y:100, scale: .8, anchor:'center_bottom'});
-	this.animDefault = playerAnim.slice(0,3);
-	this.animLeft = playerAnim.slice(3,5);
-	this.animRight = playerAnim.slice(5,7);
-	this.animUp = playerAnim.slice(7,9);
+	var playerAnim = new jaws.Animation({sprite_sheet: "res/img/sprites/player.png", orientation:'right', frame_size: [280,640], frame_duration: 200});
+	this.__proto__ = new jaws.Sprite({x:100, y:100, scale: .09, anchor:'center_bottom'});
+	this.animDefault = playerAnim.slice(0,4);
+	this.animLeft = playerAnim.slice(4,8);
+	this.animRight = playerAnim.slice(4,8);
+	this.animUp = playerAnim.slice(4,8);
 	this.arm = new Arm(this);
 	this.vy = 0;
 	this.vx = 0;
 	this.canJump = false;
 	this.canFire = false;
+	this.facingRight = true;
 	window.setTimeout(function() {
 		player.canFire = true;
 	}, 200);
@@ -124,10 +125,15 @@ function Player() {
 		if(jaws.pressed("left") || jaws.pressed('a')) {
 			this.vx = -4;
 			this.setImage(this.animLeft.next());
+			this.flipped = true;
+			this.arm.flipped = true;
 		}
 		if(jaws.pressed("right") || jaws.pressed('d')) {
 			this.vx = 4;
 			this.setImage(this.animRight.next());
+			this.flipped = false;
+			this.arm.flipped = false;
+			
 		}
 		if(jaws.pressed("up") || jaws.pressed('w')) {
 			if(this.canJump) {
@@ -140,6 +146,10 @@ function Player() {
 				var newBullet = new Bullet(this.arm.x, this.arm.y, state);
 				state.bullets.push(newBullet);
 				this.canFire = false;
+				this.arm.setImage(this.arm.fired);
+				window.setTimeout(function() {
+					player.arm.setImage(player.arm.notFired);
+				}, 400);
 				window.setTimeout(function() {
 					player.canFire = true;
 				}, 1000);
@@ -180,14 +190,20 @@ function Player() {
 			this.vy = 0;
 		}
 		this.arm.x = this.x;
-		this.arm.y = this.y-this.height/2+10;
+		this.arm.y = this.y-this.height/2;
 		var angle = Math.atan2(jaws.mouse_y - this.arm.y + state.viewport.y, jaws.mouse_x - this.arm.x + state.viewport.x);
 		this.arm.rotateTo(angle*180/Math.PI);
+		if(this.arm.flipped)
+			this.arm.rotate(180);
 	}
 }
 
 function Arm(player) {
-	 this.__proto__ = new jaws.Sprite({image: 'res/img/sprites/arm.png', x:player.x+player.width/2, y:player.y+player.height/2, scale:1, anchor:'left_center'});
+	var armAnim = new jaws.SpriteSheet({image: "res/img/sprites/arm.png", orientation:'down', frame_size: [298,75]})
+	this.__proto__ = new jaws.Sprite({scale:.09, x:player.x+player.width/2, y:player.y+player.height/2, anchor:'left_center'});
+	this.fired = armAnim.frames[1];
+	this.notFired = armAnim.frames[0];
+	this.setImage(this.notFired);
 }
 
 function Bullet(x, y, state) {
