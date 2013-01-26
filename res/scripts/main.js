@@ -1,8 +1,9 @@
 window.onload = function() {
 	var assetList = [];
-	assetList.push('res/img/sprites/player.png');
-	assetList.push('res/img/sprites/arm.png');
-	assetList.push('res/img/sprites/bullet.png');
+	assetList.push('res/img/sprites/player/player.png');
+	assetList.push('res/img/sprites/player/arm.png');
+	assetList.push('res/img/sprites/enemies/bedbug.png');
+	assetList.push('res/img/sprites/misc/bullet.png');
 	assetList.push('res/img/misc/menu2.jpg');
 	assetList.push('res/img/misc/sky1.png');
 	assetList.push('res/img/misc/hill1.png');
