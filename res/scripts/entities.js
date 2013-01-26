@@ -123,9 +123,9 @@ function Bedbug(x,y) {
 				this.vx = -this.speed;
 			}
 			if (player.y-player.height > this.y) {
-				this.vy = this.speed
+				this.vy = this.speed;
 			} else if (player.y-player.height < this.y) {
-				this.vy = -this.speed;
+				this.vy = -this.speed - 5;
 			}
 		}
 		else {
