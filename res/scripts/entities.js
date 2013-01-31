@@ -33,11 +33,22 @@ function State(level) {
 				this.level.events[i].exec();
 			}
 		}
+		
+		if (Math.floor(Math.random()*50) == 0) {
+			var x = Math.floor(Math.random()*this.level.blocks[0].length*this.level.cellSize);
+			var y = Math.floor(Math.random()*this.level.blocks.length*this.level.cellSize);
+			console.log(x,y);
+			console.log(player.x, player.y);
+			this.enemies.push(new Bedbug(x,y));
+		}
+		
 		player.move(this);
 		this.viewport.centerAround(player);
 		this.bullets.update();
 		this.enemies.update();
 		this.bullets.removeIf(isOutsideLevel);
+		this.enemies.removeIf(isOutsideLevel);
+		console.log(this.enemies.length);
 		this.bullets.removeIf(isHittingTile);
 		this.bullets.removeIf(toRemoval);
 		this.enemies.forEach(function(entity) {
@@ -103,9 +114,10 @@ function Enemy1(img,x,y) {
 }
 
 function Bedbug(x,y) {
-	this.__proto__ = new jaws.Sprite({x:x, y:y, scale:.2});
+	this.__proto__ = new jaws.Sprite({x:x, y:y, scale:.2, anchor:'center'});
 	this.anim = new jaws.Animation({sprite_sheet: 'res/img/sprites/enemies/bedbug.png', orientation:'right', frame_size: [257,216], frame_duration:700});
-	this.speed = 2;
+	this.toRemove = false;
+	this.speed = 1;
 	this.health = 1;
 	this.vx = 0;
 	this.vy = 0;
@@ -114,38 +126,19 @@ function Bedbug(x,y) {
 		var state = jaws.game_state;
 		this.vy += state.gravity;
 		this.vx = 0;
-		if (isHittingTile(this)) {
-			console.log(this.x, this.y);
-			this.vy = 0;
+		if (isHittingTilemap(this)) {
 			if (player.x > this.x) {
 				this.vx = this.speed;
 			} else if (player.x < this.x) {
 				this.vx = -this.speed;
 			}
-			if (player.y-player.height > this.y) {
-				this.vy = this.speed;
-			} else if (player.y-player.height < this.y) {
-				this.vy = -this.speed - 5;
-			}
-		}
-		else {
-			this.y += 5;
-			if (isHittingTile(this)) {
-				this.y -= 5;
-				console.log(this.x, this.y);
-				this.vy = 0;
-				if (player.x > this.x) {
-					this.vx = this.speed;
-				} else if (player.x < this.x) {
-					this.vx = -this.speed;
-				}
-				if (player.y-player.height/2 > this.y) {
-					this.vy = this.speed
-				} else if (player.y-player.height/2 < this.y) {
+			this.vy = 0;
+			if (player.y >= this.y) {
+					this.vy = this.speed;
+			} else if (player.y < this.y) {
+				if (state.tileMap.at(this.x, this.y).length > 0) {
 					this.vy = -this.speed;
 				}
-			} else {
-				this.y -= 5;
 			}
 		}
 		this.x += this.vx;
