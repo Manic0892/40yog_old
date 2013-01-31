@@ -11,7 +11,8 @@ function State(level) {
 				}
 			}
 		}
-		this.gravity = 0.4;
+		this.g = 0.4;
+		this.vt = 20;
 		this.tileMap = new jaws.TileMap({size: [this.level.blocks[0].length, this.level.blocks.length], cell_size: [this.level.cellSize, this.level.cellSize]});
 		this.tileMap.push(this.level.spriteList);
 		this.width = this.level.blocks[0].length * this.level.cellSize;
@@ -124,7 +125,8 @@ function Bedbug(x,y) {
 	this.setImage(this.anim.next());
 	this.update = function() {
 		var state = jaws.game_state;
-		this.vy += state.gravity;
+		if (this.vy < state.vt)
+			this.vy += state.g;
 		this.vx = 0;
 		if (isHittingTilemap(this)) {
 			if (player.x > this.x) {
@@ -203,7 +205,8 @@ function Player() {
 			}
 		}
 		
-		this.vy += state.gravity;
+		if (this.vy < state.vt)
+			this.vy += state.g;
 		
 		this.x += this.vx;
 		
