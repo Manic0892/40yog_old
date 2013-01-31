@@ -117,7 +117,7 @@ function Bedbug(x,y) {
 	this.__proto__ = new jaws.Sprite({x:x, y:y, scale:.2, anchor:'center'});
 	this.anim = new jaws.Animation({sprite_sheet: 'res/img/sprites/enemies/bedbug.png', orientation:'right', frame_size: [257,216], frame_duration:700});
 	this.toRemove = false;
-	this.speed = 1;
+	this.speed = 3;
 	this.health = 1;
 	this.vx = 0;
 	this.vy = 0;
