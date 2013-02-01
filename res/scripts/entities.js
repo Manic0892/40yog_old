@@ -35,7 +35,7 @@ function State(level) {
 			}
 		}
 		
-		if (Math.floor(Math.random()*50) == 0) {
+		if (Math.floor(Math.random()*400) == 0) {
 			var x = Math.floor(Math.random()*this.level.blocks[0].length*this.level.cellSize);
 			var y = Math.floor(Math.random()*this.level.blocks.length*this.level.cellSize);
 			console.log(x,y);
