@@ -1,4 +1,11 @@
 window.onload = function() {
+	//states.push(menuState);
+	//states.push(new Level1(buildLevel(levels.lvls[0])));
+	//states.index = 0;
+	
+	states.push(menuState);
+	
+	
 	var assetList = [];
 	assetList.push('res/img/sprites/player/player.png');
 	assetList.push('res/img/sprites/player/arm.png');
@@ -13,8 +20,10 @@ window.onload = function() {
 	jaws.assets.add(assetList);
 	jaws.start(states[0]);
 	
+	states.push(new Level1(buildLevel(levels.lvls[0])));
+	states.index = 0;
 	
-	for (i in levels.lvls) {
-		states.push(new State(buildLevel(levels.lvls[i])));
-	}
+	//for (i in levels.lvls) {
+	//	states.push(new State(buildLevel(levels.lvls[i])));
+	//}
 }
