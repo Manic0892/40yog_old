@@ -11,11 +11,9 @@ var menuState = new function() {
 		this.menuImage.src = 'res/img/misc/menu2.jpg';
 	}
 	this.update = function() {
-		//var mousex = jaws.mouse_x;
 		var mousey = jaws.mouse_y;
 		var elements = this.items.length;
 		var selection = Math.floor((mousey-this.initoffset+this.spacing)/(this.spacing));
-		//console.log(Math.ceil(selection));
 		if (selection < 0)
 			selection = 0;
 		else if (selection > this.items.length-1)
@@ -79,8 +77,6 @@ function Level1(level) {
 		if (Math.floor(Math.random()*100) == 0) {
 			var x = Math.floor(Math.random()*this.level.blocks[0].length*this.level.cellSize);
 			var y = Math.floor(Math.random()*this.level.blocks.length*this.level.cellSize);
-			console.log(x,y);
-			console.log(player.x, player.y);
 			this.enemies.push(new Bedbug(x,y));
 		}
 		
@@ -90,7 +86,6 @@ function Level1(level) {
 		this.enemies.update();
 		this.bullets.removeIf(isOutsideLevel);
 		this.enemies.removeIf(isOutsideLevel);
-		console.log(this.enemies.length);
 		this.bullets.removeIf(isHittingTile);
 		this.bullets.removeIf(toRemoval);
 		this.enemies.forEach(function(entity) {
@@ -127,5 +122,16 @@ function Level1(level) {
 			player.arm.draw();
 			state.emitters.draw();
 		});
+	}
+	this.specFunc = function() {
+		if (jaws.pressed('space')) {
+			this.enemies.forEach(this.testRange);
+				
+		}
+	}
+	this.testRange = function(entity) {
+		if (entity.x < player.x + 500 && entity.x >= player.x - 500 && entity.y < player.y + 500 && entity.y >= player.y - 500) {
+			entity.toRemove = true;
+		}
 	}
 }

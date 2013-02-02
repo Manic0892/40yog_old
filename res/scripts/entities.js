@@ -113,6 +113,7 @@ function Player() {
 				gunshot.play();
 			}
 		}
+		state.specFunc();
 		
 		if (this.vy < state.vt)
 			this.vy += state.g;
