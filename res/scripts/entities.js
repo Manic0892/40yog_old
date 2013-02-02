@@ -35,7 +35,7 @@ function State(level) {
 			}
 		}
 		
-		if (Math.floor(Math.random()*400) == 0) {
+		if (Math.floor(Math.random()*100) == 0) {
 			var x = Math.floor(Math.random()*this.level.blocks[0].length*this.level.cellSize);
 			var y = Math.floor(Math.random()*this.level.blocks.length*this.level.cellSize);
 			console.log(x,y);
@@ -129,15 +129,15 @@ function Bedbug(x,y) {
 			this.vy += state.g;
 		this.vx = 0;
 		if (isHittingTilemap(this)) {
-			if (player.x > this.x) {
+			if (player.x >= this.x + 5) {
 				this.vx = this.speed;
-			} else if (player.x < this.x) {
+			} else if (player.x < this.x - 5) {
 				this.vx = -this.speed;
 			}
 			this.vy = 0;
-			if (player.y >= this.y) {
+			if (player.y >= this.y + 5) {
 					this.vy = this.speed;
-			} else if (player.y < this.y) {
+			} else if (player.y < this.y - 5) {
 				if (state.tileMap.at(this.x, this.y).length > 0) {
 					this.vy = -this.speed;
 				}
