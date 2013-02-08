@@ -30,6 +30,14 @@ function isHittingBullet(entity) {
 	return colliding;
 }
 
+function isHittingPlayer(entity) {
+	var colliding = false;
+	if (entity.rect().collideRect(player.rect())) {
+		colliding = true;
+	}
+	return colliding;
+}
+
 function isHittingTile(entity) {
 	var colliding = false;
 	if(jaws.game_state.tileMap.atRect(entity.rect()).length > 0) {

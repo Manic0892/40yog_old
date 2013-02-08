@@ -66,6 +66,7 @@ function Level1(level) {
 		this.parallax2 = new jaws.Parallax({repeat_x: true});
 		this.parallax2.addLayer({image: 'res/img/misc/hill1.png', damping:2});
 		this.emitters = new jaws.SpriteList();
+		player.health = 100;
 	}
 	this.update = function() {
 		for (i in this.level.events) {

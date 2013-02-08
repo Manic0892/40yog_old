@@ -31,6 +31,7 @@ function Bedbug(x,y) {
 	this.health = 1;
 	this.vx = 0;
 	this.vy = 0;
+	this.damage = 5;
 	this.setImage(this.anim.next());
 	this.update = function() {
 		var state = jaws.game_state;
@@ -55,6 +56,10 @@ function Bedbug(x,y) {
 		this.x += this.vx;
 		this.y += this.vy;
 		this.setImage(this.anim.next());
+		if (isHittingPlayer(this)) {
+			this.toRemove = true;
+			player.hit(this.damage);
+		}
 	}
 }
 
@@ -70,6 +75,8 @@ function Player() {
 	this.vx = 0;
 	this.canJump = false;
 	this.canFire = false;
+	this.health = 100;
+	this.invincible = false;
 	window.setTimeout(function() {
 		player.canFire = true;
 	}, 200);
@@ -112,6 +119,16 @@ function Player() {
 				gunshot.setVolume(5);
 				gunshot.play();
 			}
+		}
+		this.hit = function(damage) {
+			if (!this.invincible) {
+				this.health -= damage;
+				this.invincible = true;
+				window.setTimeout(function() {
+					player.invincible = false;
+				}, 4000);
+			}
+			console.log(this.health);
 		}
 		state.specFunc();
 		
