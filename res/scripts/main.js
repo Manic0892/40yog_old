@@ -23,6 +23,9 @@ window.onload = function() {
 	states.push(new Level1(buildLevel(levels.lvls[0])));
 	states.index = 0;
 	
+	canvas = document.getElementsByTagName('canvas')[0];
+	context = canvas.getContext('2d');
+	
 	//for (i in levels.lvls) {
 	//	states.push(new State(buildLevel(levels.lvls[i])));
 	//}

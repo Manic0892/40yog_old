@@ -10,8 +10,17 @@ function buildLevel(lvl) {
 	return lvl;
 }
 
-function drawHealthBar(entity) {
-	
+function drawHealthBar(entity, maxhp, x, y, height, width) {
+	var rectWidth = entity.hp/maxhp * width;
+	context.beginPath();
+	context.rect(x, y, rectWidth, height);
+	context.fillStyle = 'red';
+	context.fill();
+	context.beginPath();
+	context.rect(x, y, width, height);
+	context.strokeStyle = 'black';
+	context.lineWidth = 1;
+	context.stroke();
 }
 
 function isOutsideLevel(entity) {

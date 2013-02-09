@@ -91,8 +91,8 @@ function Level1(level) {
 		this.bullets.removeIf(toRemoval);
 		this.enemies.forEach(function(entity) {
 			if (isHittingBullet(entity)) {
-				entity.health--;
-				if (entity.health <= 0) {
+				entity.hp--;
+				if (entity.hp <= 0) {
 					entity.toRemove = true;
 				}
 			}
@@ -123,7 +123,7 @@ function Level1(level) {
 			player.arm.draw();
 			state.emitters.draw();
 		});
-		drawHealthBar(player, 100,100);
+		drawHealthBar(player, 100, 10,10, 20, 100);
 	}
 	this.specFunc = function() {
 		if (jaws.pressed('space')) {
