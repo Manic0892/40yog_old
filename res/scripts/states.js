@@ -123,6 +123,7 @@ function Level1(level) {
 			player.arm.draw();
 			state.emitters.draw();
 		});
+		drawHealthBar(player, 100,100);
 	}
 	this.specFunc = function() {
 		if (jaws.pressed('space')) {

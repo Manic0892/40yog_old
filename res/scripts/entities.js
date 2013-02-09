@@ -2,7 +2,7 @@ function NPC(x, y) {
 	this.__proto__ = new jaws.Sprite({x:x, y:y});
 	this.direction = -1;
 	this.speed = 2;
-	this.health = 3;
+	this.hp = 3;
 	this.toRemove = false;
 	this.update = function() {
 		var state = jaws.game_state;
@@ -28,7 +28,7 @@ function Bedbug(x,y) {
 	this.anim = new jaws.Animation({sprite_sheet: 'res/img/sprites/enemies/bedbug.png', orientation:'right', frame_size: [257,216], frame_duration:700});
 	this.toRemove = false;
 	this.speed = 3;
-	this.health = 1;
+	this.hp = 1;
 	this.vx = 0;
 	this.vy = 0;
 	this.damage = 5;
@@ -75,7 +75,7 @@ function Player() {
 	this.vx = 0;
 	this.canJump = false;
 	this.canFire = false;
-	this.health = 100;
+	this.hp = 100;
 	this.invincible = false;
 	window.setTimeout(function() {
 		player.canFire = true;
@@ -122,13 +122,45 @@ function Player() {
 		}
 		this.hit = function(damage) {
 			if (!this.invincible) {
-				this.health -= damage;
+				this.hp -= damage;
 				this.invincible = true;
+				this.alpha = .5;
+				this.arm.alpha = .5;
+				window.setTimeout(function() {
+					player.alpha = 1;
+					player.arm.alpha = 1;
+				},250);
+				window.setTimeout(function() {
+					player.alpha = .5;
+					player.arm.alpha = .5;
+				},500);
+				window.setTimeout(function() {
+					player.alpha = 1;
+					player.arm.alpha = 1;
+				},750);
+				window.setTimeout(function() {
+					player.alpha = .5;
+					player.arm.alpha = .5;
+				},1000);
+				window.setTimeout(function() {
+					player.alpha = 1;
+					player.arm.alpha = 1;
+				},1250);
+				window.setTimeout(function() {
+					player.alpha = .5;
+					player.arm.alpha = .5;
+				},1500);
+				window.setTimeout(function() {
+					player.alpha = 1;
+					player.arm.alpha = 1;
+				},1750);
 				window.setTimeout(function() {
 					player.invincible = false;
-				}, 4000);
+					player.alpha = 1;
+					player.arm.alpha = 1;
+				}, 2000);
 			}
-			console.log(this.health);
+			console.log(this.hp);
 		}
 		state.specFunc();
 		

@@ -10,6 +10,10 @@ function buildLevel(lvl) {
 	return lvl;
 }
 
+function drawHealthBar(entity) {
+	
+}
+
 function isOutsideLevel(entity) {
 	if (entity.x < -200 || entity.y < -200 || entity.x > jaws.game_state.viewport.max_x+200 || entity.y > jaws.game_state.viewport.max_y+200) {
 		return true;
