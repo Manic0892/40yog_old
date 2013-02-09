@@ -67,6 +67,9 @@ function Level1(level) {
 		this.parallax2.addLayer({image: 'res/img/misc/hill1.png', damping:2});
 		this.emitters = new jaws.SpriteList();
 		player.health = 100;
+		this.music = new buzz.sound('res/snd/pulse.mp3');
+		this.music.setVolume(5);
+		this.music.play();
 	}
 	this.update = function() {
 		for (i in this.level.events) {
@@ -135,5 +138,8 @@ function Level1(level) {
 		if (entity.x < player.x + 500 && entity.x >= player.x - 500 && entity.y < player.y + 500 && entity.y >= player.y - 500) {
 			entity.toRemove = true;
 		}
+	}
+	this.setdown = function() {
+		this.music.stop();
 	}
 }

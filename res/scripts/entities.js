@@ -124,6 +124,7 @@ function Player() {
 			if (!this.invincible) {
 				this.hp -= damage;
 				if (this.hp <= 0) {
+					jaws.game_state.setdown();
 					jaws.game_state.setup();
 				}
 				this.invincible = true;
