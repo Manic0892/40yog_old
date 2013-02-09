@@ -85,13 +85,13 @@ function Player() {
 		
 		this.vx = 0;
 		if(jaws.pressed('left') || jaws.pressed('a')) {
-			this.vx = -4;
+			this.vx = -10;
 			this.setImage(this.animLeft.next());
 			this.flipped = true;
 			this.arm.flipped = true;
 		}
 		if(jaws.pressed('right') || jaws.pressed('d')) {
-			this.vx = 4;
+			this.vx = 10
 			this.setImage(this.animRight.next());
 			this.flipped = false;
 			this.arm.flipped = false;
