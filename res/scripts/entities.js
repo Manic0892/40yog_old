@@ -123,6 +123,9 @@ function Player() {
 		this.hit = function(damage) {
 			if (!this.invincible) {
 				this.hp -= damage;
+				if (this.hp <= 0) {
+					jaws.game_state.setup();
+				}
 				this.invincible = true;
 				this.alpha = .5;
 				this.arm.alpha = .5;
