@@ -114,7 +114,7 @@ function Player() {
 				}, 400);
 				window.setTimeout(function() {
 					player.canFire = true;
-				}, 1000);
+				}, 100);
 				var gunshot = new buzz.sound('res/snd/gun.wav');
 				gunshot.setVolume(5);
 				gunshot.play();
@@ -125,7 +125,9 @@ function Player() {
 				this.hp -= damage;
 				if (this.hp <= 0) {
 					jaws.game_state.setdown();
-					jaws.game_state.setup();
+					//jaws.game_state.setup();
+					states.index--;
+					jaws.switchGameState(states[0]);
 				}
 				this.invincible = true;
 				this.alpha = .5;
@@ -164,7 +166,6 @@ function Player() {
 					player.arm.alpha = 1;
 				}, 2000);
 			}
-			console.log(this.hp);
 		}
 		state.specFunc();
 		
