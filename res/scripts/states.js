@@ -72,7 +72,6 @@ function Level1(level) {
 		this.music.setVolume(5);
 		this.music.play();
 		this.sunSound.play();
-		console.log(this.sunSound.isMuted());
 		this.sun = new Sun();
 		this.drawSun = false;
 	}
@@ -145,7 +144,8 @@ function Level1(level) {
 			}
 		});
 		
-		drawHealthBar(player, 100, 10,10, 20, 100);
+		drawHealthBar(player, 10,10, 20, 100, 'red');
+		drawPowerBar(state.sun, 10,40, 20, 100, 'yellow');
 	}
 	this.testRange = function(entity) {
 		if (entity.x < player.x + 1000 && entity.x >= player.x - 1000 && entity.y < player.y + 1000 && entity.y >= player.y - 1000) {

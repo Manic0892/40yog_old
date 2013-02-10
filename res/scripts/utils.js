@@ -10,11 +10,24 @@ function buildLevel(lvl) {
 	return lvl;
 }
 
-function drawHealthBar(entity, maxhp, x, y, height, width) {
-	var rectWidth = entity.hp/maxhp * width;
+function drawHealthBar(entity, x, y, height, width, color) {
+	var rectWidth = entity.hp/entity.mhp * width;
 	jaws.context.beginPath();
 	jaws.context.rect(x, y, rectWidth, height);
-	jaws.context.fillStyle = 'red';
+	jaws.context.fillStyle = color;
+	jaws.context.fill();
+	jaws.context.beginPath();
+	jaws.context.rect(x, y, width, height);
+	jaws.context.strokeStyle = 'black';
+	jaws.context.lineWidth = 1;
+	jaws.context.stroke();
+}
+
+function drawPowerBar(entity, x, y, height, width, color) {
+	var rectWidth = entity.p/entity.mp * width;
+	jaws.context.beginPath();
+	jaws.context.rect(x, y, rectWidth, height);
+	jaws.context.fillStyle = color;
 	jaws.context.fill();
 	jaws.context.beginPath();
 	jaws.context.rect(x, y, width, height);

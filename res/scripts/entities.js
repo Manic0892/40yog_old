@@ -76,6 +76,7 @@ function Player() {
 	this.canJump = false;
 	this.canFire = false;
 	this.hp = 100;
+	this.mhp = 100;
 	this.invincible = false;
 	window.setTimeout(function() {
 		player.canFire = true;
@@ -323,11 +324,12 @@ function Sun(x,y) {
 	this.a;
 	this.d = 1;
 	this.size = 40;
+	this.p = 200;
+	this.mp = 200;
 	this.update = function() {
 		this.x = player.x;
 		this.y = player.y - player.height/2;
 		this.g += this.d;
-		//console.log(this.g);
 		if (this.g >= 255) {
 			this.g = 255;
 			this.d *= -1;
@@ -337,6 +339,11 @@ function Sun(x,y) {
 		}
 		if (Math.floor(Math.random()*50) == 5) {
 			this.d *= -1;
+		}
+		if (jaws.pressed('space')) {
+			this.p--;
+			if (this.p < 0)
+				this.p = 0;
 		}
 	}
 	this.draw = function(state) {
