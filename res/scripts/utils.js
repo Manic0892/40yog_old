@@ -12,15 +12,15 @@ function buildLevel(lvl) {
 
 function drawHealthBar(entity, maxhp, x, y, height, width) {
 	var rectWidth = entity.hp/maxhp * width;
-	context.beginPath();
-	context.rect(x, y, rectWidth, height);
-	context.fillStyle = 'red';
-	context.fill();
-	context.beginPath();
-	context.rect(x, y, width, height);
-	context.strokeStyle = 'black';
-	context.lineWidth = 1;
-	context.stroke();
+	jaws.context.beginPath();
+	jaws.context.rect(x, y, rectWidth, height);
+	jaws.context.fillStyle = 'red';
+	jaws.context.fill();
+	jaws.context.beginPath();
+	jaws.context.rect(x, y, width, height);
+	jaws.context.strokeStyle = 'black';
+	jaws.context.lineWidth = 1;
+	jaws.context.stroke();
 }
 
 function isOutsideLevel(entity) {

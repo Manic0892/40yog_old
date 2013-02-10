@@ -167,7 +167,6 @@ function Player() {
 				}, 2000);
 			}
 		}
-		state.specFunc();
 		
 		if (this.vy < state.vt)
 			this.vy += state.g;
@@ -313,6 +312,50 @@ function Particle(x,y,dx,dy) {
 		jaws.context.beginPath();
 		jaws.context.arc(this.x, this.y, this.size, 0, Math.PI*2, true);
 		jaws.context.fillStyle = 'rgba(' + this.r + ',' + this.g + ',' + this.b + ',' + this.a + ')';
+		jaws.context.fill();
+	}
+}
+
+function Sun(x,y) {
+	this.r = 255;
+	this.g = 225;
+	this.b = 0;
+	this.a;
+	this.d = 1;
+	this.size = 40;
+	this.update = function() {
+		this.x = player.x;
+		this.y = player.y - player.height/2;
+		this.g += this.d;
+		console.log(this.g);
+		if (this.g >= 255) {
+			this.g = 255;
+			this.d *= -1;
+		} else if (this.g <= 200) {
+			this.g = 200;
+			this.d *= -1;
+		}
+		if (Math.floor(Math.random()*50) == 5) {
+			this.d *= -1;
+		}
+	}
+	this.draw = function(state) {
+		//jaws.context.beginPath();
+		//jaws.context.arc(this.x,this.y,this.size, 0, Math.PI*2, true);
+		//var grd = jaws.context.createRadialGradient(this.x, this.y, this.size/3, this.x, this.y, this.size);
+		//grd.addColorStop(0, 'rgba(' + this.r + ',' + this.g + ',' + this.b + ',1)');
+		//grd.addColorStop(1, 'rgba(' + this.r + ',' + this.g + ',' + this.b + ',0)');
+		////jaws.context.fillStyle = 'rgb(' + this.r + ',' + this.g + ',' + this.b + ')';
+		//jaws.context.fillStyle = grd;
+		//jaws.context.fill();
+		
+		
+		jaws.context.rect(0,0,state.width,state.height);
+		var grd = jaws.context.createRadialGradient(this.x, this.y, this.size, this.x, this.y, 1000);
+		grd.addColorStop(0, 'rgba(' + this.r + ',' + this.g + ',' + this.b + ',1)');
+		grd.addColorStop(.1, 'rgba(' + this.r + ',' + this.g + ',' + this.b + ',.3)');
+		grd.addColorStop(1, 'rgba(' + this.r + ',' + this.g + ',' + this.b + ',0)');
+		jaws.context.fillStyle = grd;
 		jaws.context.fill();
 	}
 }

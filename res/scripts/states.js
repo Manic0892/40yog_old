@@ -70,6 +70,8 @@ function Level1(level) {
 		this.music = new buzz.sound('res/snd/pulse.mp3');
 		this.music.setVolume(5);
 		this.music.play();
+		this.sun = new Sun();
+		this.drawSun = false;
 	}
 	this.update = function() {
 		for (i in this.level.events) {
@@ -88,6 +90,7 @@ function Level1(level) {
 		this.viewport.centerAround(player);
 		this.bullets.update();
 		this.enemies.update();
+		this.sun.update();
 		this.bullets.removeIf(isOutsideLevel);
 		this.enemies.removeIf(isOutsideLevel);
 		this.bullets.removeIf(isHittingTile);
@@ -112,6 +115,12 @@ function Level1(level) {
 		this.parallax1.camera_y = this.viewport.y;
 		this.parallax2.camera_x = this.viewport.x;
 		this.parallax2.camera_y = this.viewport.y-6000;
+		if (jaws.pressed('space')) {
+			this.enemies.forEach(this.testRange);
+			this.drawSun = true;
+		} else {
+			this.drawSun = false;
+		}
 	}
 	this.draw = function() {
 		jaws.clear();
@@ -125,14 +134,12 @@ function Level1(level) {
 			player.draw();
 			player.arm.draw();
 			state.emitters.draw();
+			if (state.drawSun) {
+				state.sun.draw(state);
+			}
 		});
+		
 		drawHealthBar(player, 100, 10,10, 20, 100);
-	}
-	this.specFunc = function() {
-		if (jaws.pressed('space')) {
-			this.enemies.forEach(this.testRange);
-				
-		}
 	}
 	this.testRange = function(entity) {
 		if (entity.x < player.x + 500 && entity.x >= player.x - 500 && entity.y < player.y + 500 && entity.y >= player.y - 500) {
