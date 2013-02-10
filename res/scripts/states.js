@@ -2,7 +2,7 @@ var states = [];
 
 var menuState = new function() {
 	this.setup = function() {
-		this.items = ['Start', 'Settings', 'Levels'];
+		this.items = ['Continue', 'New Game', 'Level Select', 'Settings'];
 		this.selected = 0;
 		this.fontsize = 50;
 		this.initoffset = 300;
@@ -20,7 +20,7 @@ var menuState = new function() {
 			selection = this.items.length-1;
 		this.selected = selection;
 		if (jaws.pressed('left_mouse_button')) {
-			if (this.selected == 0)
+			if (this.selected == 1)
 				jaws.switchGameState(states[states.index++]);
 		}
 	}
@@ -68,8 +68,11 @@ function Level1(level) {
 		this.emitters = new jaws.SpriteList();
 		player.health = 100;
 		this.music = new buzz.sound('res/snd/pulse.mp3');
+		this.sunSound = new buzz.sound('res/snd/sun.wav');
 		this.music.setVolume(5);
 		this.music.play();
+		this.sunSound.play();
+		console.log(this.sunSound.isMuted());
 		this.sun = new Sun();
 		this.drawSun = false;
 	}
@@ -115,11 +118,14 @@ function Level1(level) {
 		this.parallax1.camera_y = this.viewport.y;
 		this.parallax2.camera_x = this.viewport.x;
 		this.parallax2.camera_y = this.viewport.y-6000;
+		this.sunSound.unmute();
+		this.sunSound.mute();
+		this.drawSun = false;
+		this.sunSound.mute();
 		if (jaws.pressed('space')) {
 			this.enemies.forEach(this.testRange);
 			this.drawSun = true;
-		} else {
-			this.drawSun = false;
+			this.sunSound.unmute();
 		}
 	}
 	this.draw = function() {
@@ -142,11 +148,12 @@ function Level1(level) {
 		drawHealthBar(player, 100, 10,10, 20, 100);
 	}
 	this.testRange = function(entity) {
-		if (entity.x < player.x + 500 && entity.x >= player.x - 500 && entity.y < player.y + 500 && entity.y >= player.y - 500) {
+		if (entity.x < player.x + 1000 && entity.x >= player.x - 1000 && entity.y < player.y + 1000 && entity.y >= player.y - 1000) {
 			entity.toRemove = true;
 		}
 	}
 	this.setdown = function() {
 		this.music.stop();
+		this.sunSound.stop();
 	}
 }

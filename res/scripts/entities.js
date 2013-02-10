@@ -327,7 +327,7 @@ function Sun(x,y) {
 		this.x = player.x;
 		this.y = player.y - player.height/2;
 		this.g += this.d;
-		console.log(this.g);
+		//console.log(this.g);
 		if (this.g >= 255) {
 			this.g = 255;
 			this.d *= -1;

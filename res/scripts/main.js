@@ -15,6 +15,7 @@ window.onload = function() {
 	assetList.push('res/img/misc/sky1.png');
 	assetList.push('res/img/misc/hill1.png');
 	assetList.push('res/snd/gun.wav');
+	assetList.push('res/snd/sun.wav');
 	assetList.push('res/snd/pulse.mp3');
 	for (var j in levels.blockURLs)
 		assetList.push(levels.blockURLs[j]);
