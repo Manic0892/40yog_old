@@ -11,7 +11,10 @@ function buildLevel(lvl) {
 }
 
 function drawHealthBar(entity, x, y, height, width, color) {
-	var rectWidth = entity.hp/entity.mhp * width;
+	newhp = entity.hp;
+	if (newhp > entity.mhp)
+		newhp = entity.mhp;
+	var rectWidth = newhp/entity.mhp * width;
 	jaws.context.beginPath();
 	jaws.context.rect(x, y, rectWidth, height);
 	jaws.context.fillStyle = color;
@@ -24,7 +27,10 @@ function drawHealthBar(entity, x, y, height, width, color) {
 }
 
 function drawPowerBar(entity, x, y, height, width, color) {
-	var rectWidth = entity.p/entity.mp * width;
+	newp = entity.p;
+	if (newp > entity.mp)
+		newp = entity.mp;
+	var rectWidth = newp/entity.mp * width;
 	jaws.context.beginPath();
 	jaws.context.rect(x, y, rectWidth, height);
 	jaws.context.fillStyle = color;

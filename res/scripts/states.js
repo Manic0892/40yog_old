@@ -76,6 +76,7 @@ function Level1(level) {
 		this.sun = new Sun();
 		this.drawSun = false;
 		this.events = [];
+		this.powerups = new jaws.SpriteList();
 		
 		this.events.push(new Event({trig: function() {
 				if (player.x > 4000 && player.x < 5000 && player.y > 1000 && player.y < 1300)
@@ -87,7 +88,14 @@ function Level1(level) {
 				//jaws.game_state.setup();
 				states.index--;
 				jaws.switchGameState(states[0]);
-			}}));
+			}
+		}));
+		
+		this.powerups.push(new HealthUp(808, 1500));
+		this.powerups.push(new HealthUp(400, 1500));
+		this.powerups.push(new SunUp(450, 1500));
+		this.powerups.push(new SunUp(475, 1500));
+		this.powerups.push(new SunUp(825, 1500));
 	}
 	this.update = function() {
 		for (i in this.events) {
@@ -107,7 +115,9 @@ function Level1(level) {
 		this.bullets.update();
 		this.enemies.update();
 		this.sun.update();
+		this.powerups.update();
 		this.bullets.removeIf(isOutsideLevel);
+		this.powerups.removeIf(toRemoval);
 		this.enemies.removeIf(isOutsideLevel);
 		this.bullets.removeIf(isHittingTile);
 		this.bullets.removeIf(toRemoval);
@@ -150,6 +160,7 @@ function Level1(level) {
 			state.level.spriteList.draw();
 			state.bullets.draw();
 			state.enemies.draw();
+			state.powerups.draw();
 			player.draw();
 			player.arm.draw();
 			state.emitters.draw();

@@ -14,6 +14,8 @@ window.onload = function() {
 	assetList.push('res/img/misc/menu2.jpg');
 	assetList.push('res/img/misc/nightsky.png');
 	assetList.push('res/img/misc/nighthill.png');
+	assetList.push('res/img/sprites/power/health.png');
+	assetList.push('res/img/sprites/power/sun.png');
 	assetList.push('res/snd/gun.wav');
 	assetList.push('res/snd/sun.wav');
 	assetList.push('res/snd/pulse.mp3');

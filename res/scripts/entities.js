@@ -366,3 +366,36 @@ function Sun(x,y) {
 		jaws.context.fill();
 	}
 }
+
+function Powerup(x,y,img) {
+	this.__proto__ = new jaws.Sprite({x:x,y:y,image:img});
+	this.toRemove = false;
+	this.range = 10;
+	this.inity = y;
+	this.d = -.5;
+	this.update = function() {
+		if (this.y < this.inity - this.range || this.y > this.inity + this.range)
+			this.d *= -1;
+		this.y += this.d;
+		if (isHittingPlayer(this)) {
+			this.execPowerup();
+			this.toRemove = true;
+		}
+	}
+	this.execPowerup = function() {
+		console.log('heya');
+	}
+}
+
+function HealthUp(x,y) {
+	this.__proto__ = new Powerup(x,y,'res/img/sprites/power/health.png');
+	this.execPowerup = function() {
+		player.hp += 5;
+	}
+}
+function SunUp(x,y) {
+	this.__proto__ = new Powerup(x,y,'res/img/sprites/power/sun.png');
+	this.execPowerup = function() {
+		jaws.game_state.sun.p += 5;
+	}
+}
