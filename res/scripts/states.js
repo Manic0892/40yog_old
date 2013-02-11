@@ -62,9 +62,9 @@ function Level1(level) {
 		this.enemies.push(new Bedbug(1008, 6367));
 		this.enemies.push(new Bedbug(1316, 5823));
 		this.parallax1 = new jaws.Parallax({repeat_x: true, repeat_y: true});
-		this.parallax1.addLayer({image: 'res/img/misc/sky1.png', damping: 2});
+		this.parallax1.addLayer({image: 'res/img/misc/nightsky.png', damping: 2});
 		this.parallax2 = new jaws.Parallax({repeat_x: true});
-		this.parallax2.addLayer({image: 'res/img/misc/hill1.png', damping:2});
+		this.parallax2.addLayer({image: 'res/img/misc/nighthill.png', damping:2});
 		this.emitters = new jaws.SpriteList();
 		player.health = 100;
 		this.music = new buzz.sound('res/snd/pulse.mp3');
@@ -72,6 +72,7 @@ function Level1(level) {
 		this.music.setVolume(5);
 		this.music.play();
 		this.sunSound.play();
+		this.sunSound.loop();
 		this.sun = new Sun();
 		this.drawSun = false;
 	}
@@ -121,7 +122,7 @@ function Level1(level) {
 		this.sunSound.mute();
 		this.drawSun = false;
 		this.sunSound.mute();
-		if (jaws.pressed('space')) {
+		if (jaws.pressed('space') && this.sun.p > 0) {
 			this.enemies.forEach(this.testRange);
 			this.drawSun = true;
 			this.sunSound.unmute();

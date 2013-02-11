@@ -12,8 +12,8 @@ window.onload = function() {
 	assetList.push('res/img/sprites/enemies/bedbug.png');
 	assetList.push('res/img/sprites/misc/bullet.png');
 	assetList.push('res/img/misc/menu2.jpg');
-	assetList.push('res/img/misc/sky1.png');
-	assetList.push('res/img/misc/hill1.png');
+	assetList.push('res/img/misc/nightsky.png');
+	assetList.push('res/img/misc/nighthill.png');
 	assetList.push('res/snd/gun.wav');
 	assetList.push('res/snd/sun.wav');
 	assetList.push('res/snd/pulse.mp3');
