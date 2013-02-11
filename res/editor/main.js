@@ -37,11 +37,11 @@ window.onload = function() {
 	stage.add(layer);
 	stage.draw();
 	var path = 'res/editor/img/cursor.png';
-	$('#sidebar').append('<div id="listElement"><img height="50" src="'+path+'" onclick="select(\'\')"></img><div class="descriptor">Cursor<br />0x0</div></div>');
+	$('#sidebar').append('<div id="listElement" onclick="select(\'\')"><img height="50" src="'+path+'"></img><div class="descriptor">Cursor<br />0x0</div></div>');
 	path = 'res/editor/img/null.png';
-	$('#sidebar').append('<div id="listElement"><img height="50" src="'+path+'" onclick="select(\'X\')"></img><div class="descriptor">Delete<br />0x0</div></div>');
+	$('#sidebar').append('<div id="listElement" onclick="select(\'X\')"><img height="50" src="'+path+'"></img><div class="descriptor">Delete<br />0x0</div></div>');
 	path = 'res/editor/img/player.png';
-	$('#sidebar').append('<div id="listElement"><img height="50" src="'+path+'" onclick="select(\'P\')"></img><div class="descriptor">Player<br />0x0</div></div>');
+	$('#sidebar').append('<div id="listElement" onclick="select(\'P\')"><img height="50" src="'+path+'"></img><div class="descriptor">Player<br />0x0</div></div>');
 	var zoom = function(e) {
 		if (stage.getMousePosition()) {
 			var zoomAmount = e.wheelDeltaY*0.001;
@@ -64,9 +64,9 @@ function addNewBlock() {
 	img.onload = function() {
 		levels.blockURLs.push(fullPath);
 		if (this.width > this.height)
-			$('#sidebar').append('<div id="listElement"><img width="50" src="'+fullPath+'" onclick="select(\'' + (levels.blockURLs.length - 1) + '\')"></img><div class="descriptor">' + path + '<br />' + this.width + 'x' + this.height + '</div></div>');
+			$('#sidebar').append('<div id="listElement" onclick="select(\'' + (levels.blockURLs.length - 1) + '\')"><img width="50" src="'+fullPath+'"></img><div class="descriptor">' + path + '<br />' + this.width + 'x' + this.height + '</div></div>');
 		else if (this.height >= this.width) {
-			$('#sidebar').append('<div id="listElement"><img height="50" src="'+fullPath+'" onclick="select(\'' + (levels.blockURLs.length - 1) + '\')"></img><div class="descriptor">' + path + '<br />' + this.width + 'x' + this.height + '</div></div>');
+			$('#sidebar').append('<div id="listElement" onclick="select(\'' + (levels.blockURLs.length - 1) + '\')"><img height="50" src="'+fullPath+'"></img><div class="descriptor">' + path + '<br />' + this.width + 'x' + this.height + '</div></div>');
 		}
 	}
 }
@@ -195,9 +195,9 @@ function importFinish() {
 
 function imgOnLoad(img) {
 	if (img.width > img.height)
-		$('#sidebar').append('<div id="listElement"><img width="50" src="'+levels.blockURLs[blockURLsiterator]+'" onclick="select(\'' + (blockURLsiterator) + '\')"></img><div class="descriptor">' + levels.blockURLs[blockURLsiterator].split('/')[levels.blockURLs[blockURLsiterator].split('/').length - 1] + '<br />' + img.width + 'x' + img.height + '</div></div>');
+		$('#sidebar').append('<div id="listElement" onclick="select(\'' + (blockURLsiterator) + '\')"><img width="50" src="'+levels.blockURLs[blockURLsiterator]+'"></img><div class="descriptor">' + levels.blockURLs[blockURLsiterator].split('/')[levels.blockURLs[blockURLsiterator].split('/').length - 1] + '<br />' + img.width + 'x' + img.height + '</div></div>');
 	else if (img.height >= img.width) {
-		$('#sidebar').append('<div id="listElement"><img height="50" src="'+levels.blockURLs[blockURLsiterator]+'" onclick="select(\'' + (blockURLsiterator) + '\')"></img><div class="descriptor">' + levels.blockURLs[blockURLsiterator].split('/')[levels.blockURLs[blockURLsiterator].split('/').length - 1] + '<br />' + img.width + 'x' + img.height + '</div></div>');
+		$('#sidebar').append('<div id="listElement" onclick="select(\'' + (blockURLsiterator) + '\')"><img height="50" src="'+levels.blockURLs[blockURLsiterator]+'"></img><div class="descriptor">' + levels.blockURLs[blockURLsiterator].split('/')[levels.blockURLs[blockURLsiterator].split('/').length - 1] + '<br />' + img.width + 'x' + img.height + '</div></div>');
 	}
 	if (blockURLsiterator < levels.blockURLs.length-1) {
 		blockURLsiterator++;
