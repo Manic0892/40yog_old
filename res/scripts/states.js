@@ -75,11 +75,24 @@ function Level1(level) {
 		this.sunSound.loop();
 		this.sun = new Sun();
 		this.drawSun = false;
+		this.events = [];
+		
+		this.events.push(new Event({trig: function() {
+				if (player.x > 4000 && player.x < 5000 && player.y > 1000 && player.y < 1300)
+					return true;
+				else
+					return false;
+			}, exec: function() {
+				jaws.game_state.setdown();
+				//jaws.game_state.setup();
+				states.index--;
+				jaws.switchGameState(states[0]);
+			}}));
 	}
 	this.update = function() {
-		for (i in this.level.events) {
-			if (this.level.events[i].trig()) {
-				this.level.events[i].exec();
+		for (i in this.events) {
+			if (this.events[i].trig()) {
+				this.events[i].exec();
 			}
 		}
 		

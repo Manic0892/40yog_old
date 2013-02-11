@@ -148,7 +148,6 @@ function Level(options) {
 	this.width = options.width;
 	this.cellSize = options.cellSize;
 	this.blocks = [];
-	this.events = [];
 	
 	for (var i = 0; i < this.height; i++) {
 		this.blocks[i] = [];

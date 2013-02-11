@@ -244,7 +244,7 @@ function Bullet(x, y, state) {
         }
 }
 
-function event(options) {
+function Event(options) {
 	this.trig = options.trig;
 	this.exec = options.exec;
 }
