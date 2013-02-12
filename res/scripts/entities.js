@@ -278,6 +278,34 @@ function BloodParticle(x,y,dx,dy, gravity) {
 	}
 }
 
+function SootEmitter(x,y) {
+	this.__proto__ = new Emitter(x,y,0,0);
+	for (var i = 0; i < 100; i++) {
+		var particleDX = Math.random()/2-.25;
+		var particleDY = (Math.random()/2);
+		newX = x+Math.floor(Math.random()*75)-37;
+		this.particles.push(new SootParticle(x,this.y,particleDX, particleDY, .03));
+	}
+}
+
+function SootParticle(x,y,dx,dy, gravity) {
+	this.__proto__ = new Particle(x,y,dx,dy);
+	this.r = 0;
+	this.g = 0;
+	this.b = 0;
+	this.a = Math.random()/1.5;
+	this.gravity = gravity;
+	this.size = Math.floor(Math.random()*5);
+	this.update = function() {
+		this.dy += this.gravity;
+		this.x += this.dx;
+		this.y += this.dy;
+		this.a -= .005;
+		if (this.a < 0)
+			this.a = 0;
+	}
+}
+
 function Emitter(x,y,dx,dy) {
 	this.x = x;
 	this.y = y;
@@ -324,8 +352,8 @@ function Sun(x,y) {
 	this.a;
 	this.d = 1;
 	this.size = 40;
-	this.p = 200;
-	this.mp = 200;
+	this.p = 50;
+	this.mp = 50;
 	this.update = function() {
 		this.x = player.x;
 		this.y = player.y - player.height/2;

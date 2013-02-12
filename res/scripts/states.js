@@ -78,18 +78,18 @@ function Level1(level) {
 		this.events = [];
 		this.powerups = new jaws.SpriteList();
 		
-		this.events.push(new Event({trig: function() {
-				if (player.x > 4000 && player.x < 5000 && player.y > 1000 && player.y < 1300)
-					return true;
-				else
-					return false;
-			}, exec: function() {
-				jaws.game_state.setdown();
-				//jaws.game_state.setup();
-				states.index--;
-				jaws.switchGameState(states[0]);
-			}
-		}));
+		//this.events.push(new Event({trig: function() {
+		//		if (player.x > 4000 && player.x < 5000 && player.y > 1000 && player.y < 1300)
+		//			return true;
+		//		else
+		//			return false;
+		//	}, exec: function() {
+		//		jaws.game_state.setdown();
+		//		//jaws.game_state.setup();
+		//		states.index--;
+		//		jaws.switchGameState(states[0]);
+		//	}
+		//}));
 		
 		this.powerups.push(new HealthUp(808, 1500));
 		this.powerups.push(new HealthUp(400, 1500));
@@ -126,6 +126,7 @@ function Level1(level) {
 				entity.hp--;
 				if (entity.hp <= 0) {
 					entity.toRemove = true;
+					//jaws.game_state.emitters.push(new SootEmitter(entity.x, entity.y));
 				}
 			}
 		});
@@ -175,6 +176,7 @@ function Level1(level) {
 	this.testRange = function(entity) {
 		if (entity.x < player.x + 1000 && entity.x >= player.x - 1000 && entity.y < player.y + 1000 && entity.y >= player.y - 1000) {
 			entity.toRemove = true;
+			jaws.game_state.emitters.push(new SootEmitter(entity.x, entity.y));
 		}
 	}
 	this.setdown = function() {
