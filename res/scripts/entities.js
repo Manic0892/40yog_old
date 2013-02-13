@@ -281,19 +281,21 @@ function BloodParticle(x,y,dx,dy, gravity) {
 function SootEmitter(x,y) {
 	this.__proto__ = new Emitter(x,y,0,0);
 	for (var i = 0; i < 100; i++) {
-		var particleDX = Math.random()/2-.25;
-		var particleDY = (Math.random()/2);
-		newX = x+Math.floor(Math.random()*75)-37;
-		this.particles.push(new SootParticle(x,this.y,particleDX, particleDY, .03));
+		var particleDX = (Math.random()/2)-.25;
+		var particleDY = (Math.random()/2)-.25;
+		newX = x+Math.floor(Math.random()*20)-10;
+		newY = y + Math.floor(Math.random()*20)-10;
+		this.particles.push(new SootParticle(newX,newY,particleDX, particleDY, .015));
 	}
 }
 
 function SootParticle(x,y,dx,dy, gravity) {
 	this.__proto__ = new Particle(x,y,dx,dy);
-	this.r = 0;
-	this.g = 0;
-	this.b = 0;
-	this.a = Math.random()/1.5;
+	var g = Math.floor(Math.random()*255)/3;
+	this.r = g;
+	this.g = g;
+	this.b = g;
+	this.a = Math.random()/2 + .5;
 	this.gravity = gravity;
 	this.size = Math.floor(Math.random()*5);
 	this.update = function() {
