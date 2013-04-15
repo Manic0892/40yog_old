@@ -63,6 +63,8 @@ function Bedbug(x,y) {
 	}
 }
 
+var bulletsFired = 0;
+
 function Player() {
 	var playerAnim = new jaws.Animation({sprite_sheet: 'res/img/sprites/player/player.png', orientation:'right', frame_size: [280,640], frame_duration: 200});
 	this.__proto__ = new jaws.Sprite({x:100, y:100, scale: .09, anchor:'center_bottom'});
@@ -119,7 +121,9 @@ function Player() {
 				var gunshot = new buzz.sound('res/snd/gun.wav');
 				gunshot.setVolume(5);
 				gunshot.play();
+				bulletsFired++;
 			}
+			console.log(bulletsFired, state.bullets.length);
 		}
 		this.hit = function(damage) {
 			if (!this.invincible) {
@@ -218,6 +222,7 @@ function Arm(player) {
 }
 
 function Bullet(x, y, state) {
+	this.id = bulletsFired;
 	this.__proto__ = new jaws.Sprite({image:'res/img/sprites/misc/bullet.png', x:x, y:y});
 	var angle = Math.atan2(jaws.mouse_y - player.arm.y + state.viewport.y, jaws.mouse_x - player.arm.x + state.viewport.x);
 	this.rotateTo(angle*(180/Math.PI));
